@@ -1,0 +1,25 @@
+HELP.md
+.gradle
+build/
+!gradle/wrapper/gradle-wrapper.jar
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+## Internal Spring Boot Projects ##
+**/HELP.md
+**/.gradle
+**/build/
+**/!gradle/wrapper/gradle-wrapper.jar
+**/!**/src/main/**/build/
+**/!**/src/test/**/build/
+**/logs
+**/.env
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+out/
+!**/src/main/**/out/
+!**/src/test/**/out/
