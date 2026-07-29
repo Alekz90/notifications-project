@@ -1,0 +1,64 @@
+name: notifications-project
+services:
+    ms-security-users-service:
+        container_name: ms-security-users
+        ports:
+          - "8081:8080"
+        env_file:
+          - .env
+        environment:
+          - USERS_DB_URL=users-db-service
+          - USERS_DB_USER=${USERS_DB_USER}
+          - USERS_DB_PASSWORD=${USERS_DB_PASSWORD}
+        depends_on:
+          - users-db-service
+
+    users-db-service:
+        container_name: users-db
+        image: postgres:15.3
+        env_file:
+          - .env
+        environment:
+          POSTGRES_DB: ${USERS_DB_NAME}
+          POSTGRES_USER: ${USERS_DB_USER}
+          POSTGRES_PASSWORD: ${USERS_DB_PASSWORD}
+        volumes:
+          - users-volume:/var/lib/postgresql/data
+        ports:
+        - "5432:5432"
+
+    notifications-db-service:
+      container_name: notifications-db
+      image: postgres:15.3
+      env_file:
+        - .env
+      environment:
+        POSTGRES_DB: ${NOTIFICATIONS_DB_NAME}
+        POSTGRES_USER: ${NOTIFICATIONS_DB_USER}
+        POSTGRES_PASSWORD: ${NOTIFICATIONS_DB_PASSWORD}
+      volumes:
+        - notifications-volume:/var/lib/postgresql/data
+      ports:
+        - "5433:5432"
+
+volumes:
+  users-volume:
+    name: users-volume
+  notifications-volume:
+    name: notifications-volume
+
+networks:
+  notifications-network:
+    name: notifications-network
+
+
+# Move to the directory
+# cd C:/Projects/Notifications/Notifications-project
+
+# "--build" forced the image building
+# "--env-file .env" environment file
+# Build and run the containers
+# docker compose up -d
+
+# To stop and remove the containers
+# docker compose down
