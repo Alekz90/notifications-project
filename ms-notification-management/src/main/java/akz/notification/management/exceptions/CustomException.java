@@ -1,9 +1,7 @@
-package akz.securityusers.exceptions;
+package akz.notification.management.exceptions;
 
 import akz.commonutils.exception.CustomCommonException;
-import akz.commonutils.util.enums.ECommonError;
-import akz.commonutils.util.enums.GenericEnum;
-import akz.securityusers.utils.enums.EError;
+import akz.notification.management.util.enums.EError;
 import org.springframework.http.HttpStatus;
 
 public class CustomException extends CustomCommonException {

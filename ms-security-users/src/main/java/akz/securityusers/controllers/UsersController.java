@@ -19,18 +19,18 @@ import static akz.securityusers.utils.PathConstants.V1;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(USERS)
-@Tag(name = "Users", description = "Users management endpoints")
+@Tag(name = "Users", description = "User endpoints management")
 public class UsersController {
 
   private final IUsersService service;
 
-  @GetMapping("/{id}")
+  @GetMapping(V1 + "/{id}")
   @Operation(summary = "Get user by ID", security = @SecurityRequirement(name = "bearerAuth"))
   public ResponseEntity<ResultDto<UserDto.UserResponse>> getCurrentUser(@PathVariable Long id) {
     return ResponseEntity.ok(new ResultDto<>(service.getUserById(id)));
   }
 
-  @GetMapping("/username/{username}")
+  @GetMapping(V1 + "/username/{username}")
   @Operation(summary = "Get user by username", security = @SecurityRequirement(name = "bearerAuth"))
   public ResponseEntity<ResultDto<UserDto.UserResponse>> getUserByUsername(@PathVariable @ValidUsername String username) {
     return ResponseEntity.ok(new ResultDto<>(service.getUserByUsername(username)));

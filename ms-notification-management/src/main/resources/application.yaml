@@ -1,0 +1,40 @@
+server.port: 8082
+
+spring:
+  application:
+    name: ms-notification-management
+  datasource:
+    url: ${NOTIFICATIONS_DB_URL}
+    username: ${NOTIFICATIONS_DB_USER}
+    password: ${NOTIFICATIONS_DB_PASSWORD}
+    initialize: true
+  jpa:
+    hibernate:
+      ddl-auto: update
+      show-sql: true
+      dialect: org.hibernate.dialect.PostgreSQLDialect
+
+springdoc:
+  api-docs:
+    enabled: true
+  default-consumes-media-type: 'application/json'
+  default-produces-media-type: 'application/json'
+
+  open-api:
+    servers:
+      - url: 'http://localhost:${server.port}'
+        description: 'Development server'
+      - url: 'https://api.alkz.com/ms-notification-management'
+        description: 'Production server'
+    info:
+      title: 'Notification Management API'
+      description: 'API for managing notifications in the system.'
+      version: '1.0.0'
+      terms-of-service: 'https://alkz.com/terms'
+      contact:
+        name: 'Alkz Support'
+        url: 'https://alkz.com/support'
+        email: 'alejd@alkz.com'
+      license:
+        name: 'MIT License'
+        url: 'https://opensource.org/licenses/MIT'
