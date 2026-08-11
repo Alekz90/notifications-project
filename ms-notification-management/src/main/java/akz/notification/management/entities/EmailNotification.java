@@ -1,6 +1,7 @@
 package akz.notification.management.entities;
 
 import akz.notification.management.dto.NotificationDto;
+import akz.notification.management.entities.abstracts.AbstractNotification;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

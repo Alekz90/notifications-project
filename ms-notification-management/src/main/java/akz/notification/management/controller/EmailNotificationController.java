@@ -4,12 +4,12 @@ import akz.commonutils.dto.ResultDto;
 import akz.commonutils.util.CommonUtils;
 import akz.notification.management.dto.EmailNotificationDto;
 import akz.notification.management.dto.NotificationDto;
-import akz.notification.management.dto.PushNotificationDto;
 import akz.notification.management.service.interfaces.INotificationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -18,7 +18,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import static akz.notification.management.util.Constants.EMAIL_SERVICE_NAME;
-import static akz.notification.management.util.Constants.PUSH_SERVICE_NAME;
 
 @Validated
 @RestController
@@ -40,8 +39,12 @@ public class EmailNotificationController {
 
   @GetMapping("/users/{userId}")
   @Operation(summary = "Get all notifications by user ID")
-  public ResponseEntity<ResultDto<List<NotificationDto.Response>>> getAllByUserId(@PathVariable long userId) {
-    return ResponseEntity.ok(new ResultDto<>(service.getAllByUserId(userId)));
+  public ResponseEntity<ResultDto<List<NotificationDto.Response>>> getAllByUserId(
+    @PathVariable long userId,
+    @RequestParam(required = false, defaultValue = "10") int size,
+    @RequestParam(required = false, defaultValue =  "1") int page
+  ) {
+    return ResponseEntity.ok(new ResultDto<>(service.getAllByUserId(userId, size, page)));
   }
 
   @PostMapping("/users/{userId}")

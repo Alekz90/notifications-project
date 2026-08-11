@@ -1,4 +1,4 @@
-package akz.notification.management.entities;
+package akz.notification.management.entities.abstracts;
 
 import akz.commonutils.util.CommonUtils;
 import akz.notification.management.util.enums.EMessageStatus;
@@ -27,7 +27,7 @@ public abstract class AbstractNotification {
   protected Long userId;
   protected boolean deleted;
   @Column(name = "sent_at")
-  protected LocalDateTime sendAt;
+  protected LocalDateTime sentAt;
   @Column(name = "created_at")
   protected LocalDateTime createdAt;
   @Column(name = "updated_at")
@@ -36,7 +36,7 @@ public abstract class AbstractNotification {
   protected AbstractNotification() {
     this.deleted = false;
     this.status = EMessageStatus.PENDING;
-    this.sendAt = CommonUtils.getDateTimeZero();
+    this.sentAt = CommonUtils.getDateTimeZero();
     this.createdAt = CommonUtils.getCurrentLocalDateTime();
     this.updatedAt = CommonUtils.getCurrentLocalDateTime();
   }

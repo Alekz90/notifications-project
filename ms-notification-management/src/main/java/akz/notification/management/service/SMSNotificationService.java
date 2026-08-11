@@ -9,6 +9,8 @@ import akz.notification.management.service.interfaces.INotificationService;
 import akz.notification.management.util.enums.EError;
 import akz.notification.management.util.enums.EMessageStatus;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -41,8 +43,10 @@ public class SMSNotificationService implements INotificationService {
    * @return list of notification responses
    */
   @Override
-  public List<NotificationDto.Response> getAllByUserId(Long userId) {
-    return repository.findByUserIdAndDeletedFalse(userId).stream()
+  public List<NotificationDto.Response> getAllByUserId(Long userId, int size, int page) {
+    return repository.findByUserIdAndDeletedFalse(userId, PageRequest.of(page - 1, size))
+      .getContent()
+      .stream()
       .map(NotificationDto.Response::fromEntity)
       .toList();
   }

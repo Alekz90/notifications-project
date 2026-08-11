@@ -20,7 +20,7 @@ public interface INotificationService {
    * @param userId user ID
    * @return list of notification responses
    */
-  List<NotificationDto.Response> getAllByUserId(Long userId);
+  List<NotificationDto.Response> getAllByUserId(Long userId, int size, int page);
 
   /**
    * Create a new notification.

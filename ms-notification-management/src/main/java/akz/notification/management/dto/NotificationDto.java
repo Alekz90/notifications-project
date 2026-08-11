@@ -18,21 +18,21 @@ public class NotificationDto {
 
     public static Response fromEntity(PushNotification push) {
       return new Response(
-        push.getId(), push.getTitle(), push.getBody(), push.getRecipient(), push.getStatus(), push.getSendAt(),
+        push.getId(), push.getTitle(), push.getBody(), push.getRecipient(), push.getStatus(), push.getSentAt(),
         push.getUpdatedAt()
       );
     }
 
     public static Response fromEntity(SMSNotification sms) {
       return new Response(
-        sms.getId(), sms.getTitle(), sms.getBody(), sms.getRecipient(), sms.getStatus(), sms.getSendAt(),
+        sms.getId(), sms.getTitle(), sms.getBody(), sms.getRecipient(), sms.getStatus(), sms.getSentAt(),
         sms.getUpdatedAt()
       );
     }
 
     public static Response fromEntity(EmailNotification email) {
       return new Response(
-        email.getId(), email.getTitle(), email.getBody(), email.getRecipient(), email.getStatus(), email.getSendAt(),
+        email.getId(), email.getTitle(), email.getBody(), email.getRecipient(), email.getStatus(), email.getSentAt(),
         email.getUpdatedAt()
       );
     }

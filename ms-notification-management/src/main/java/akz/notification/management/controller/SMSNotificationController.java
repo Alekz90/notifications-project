@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -39,8 +40,12 @@ public class SMSNotificationController {
 
   @GetMapping("/users/{userId}")
   @Operation(summary = "Get all notifications by user ID")
-  public ResponseEntity<ResultDto<List<NotificationDto.Response>>> getAllByUserId(@PathVariable long userId) {
-    return ResponseEntity.ok(new ResultDto<>(service.getAllByUserId(userId)));
+  public ResponseEntity<ResultDto<List<NotificationDto.Response>>> getAllByUserId(
+    @PathVariable long userId,
+    @RequestParam(required = false, defaultValue = "10") int size,
+    @RequestParam(required = false, defaultValue =  "1") int page
+  ) {
+    return ResponseEntity.ok(new ResultDto<>(service.getAllByUserId(userId, size, page)));
   }
 
   @PostMapping("/users/{userId}")
