@@ -33,7 +33,7 @@ public class UserDto {
 
   @Schema(name = "UserDto.UserResponse", description = "DTO for user response")
   public record UserResponse(Long id, String username, String email, boolean active, String role, boolean blocked,
-      boolean verified, String creationDate) {
+      boolean verified, String createdAt) {
 
     public static UserResponse build(User user) {
       return new UserResponse(
@@ -44,7 +44,7 @@ public class UserDto {
           user.getRole().name(),
           user.isBlocked(),
           user.isVerified(),
-          user.getCreationDate().toString()
+          user.getCreatedAt().toString()
       );
     }
   }

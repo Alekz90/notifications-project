@@ -15,13 +15,13 @@ import java.time.LocalDateTime;
 @MappedSuperclass
 public abstract class AbstractLocalDateFields {
 
-  @Column(name = "creation_date")
-  protected LocalDateTime creationDate;
-  @Column(name = "modification_date")
-  protected LocalDateTime modificationDate;
+  @Column(name = "created_at")
+  protected LocalDateTime createdAt;
+  @Column(name = "updated_at")
+  protected LocalDateTime updatedAt;
 
   protected AbstractLocalDateFields() {
-    this.creationDate = CommonUtils.getCurrentLocalDateTime();
-    this.modificationDate = CommonUtils.getCurrentLocalDateTime();
+    this.createdAt = CommonUtils.getCurrentLocalDateTime();
+    this.updatedAt = CommonUtils.getCurrentLocalDateTime();
   }
 }

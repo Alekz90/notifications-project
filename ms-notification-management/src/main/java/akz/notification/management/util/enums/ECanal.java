@@ -6,5 +6,5 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum ECanal {
-  EMAIL, SMS, PUSH
+  NONE, EMAIL, SMS, PUSH
 }

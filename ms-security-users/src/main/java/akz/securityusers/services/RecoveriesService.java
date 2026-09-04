@@ -24,7 +24,7 @@ public class RecoveriesService implements IRecoveriesService {
   public void sendingRecoveryPassword(String email) {
     User user = usersService.findByEmail(email);
 
-    Recovery recovery = repository.findByEmailAndUsedFalseAndExpirationDateAfter(email, CommonUtils.getCurrentLocalDateTime())
+    Recovery recovery = repository.findByEmailAndUsedFalseAndExpiredAtAfter(email, CommonUtils.getCurrentLocalDateTime())
         .orElse(new Recovery(email, user));
 
     repository.save(recovery);
@@ -37,14 +37,14 @@ public class RecoveriesService implements IRecoveriesService {
     Recovery recovery = repository.findById(id)
         .orElseThrow(() -> new CustomCommonException(HttpStatus.NOT_FOUND, EError.RECOVERY_NOT_FOUND));
 
-    if (recovery.isUsed() || recovery.getExpirationDate().isBefore(CommonUtils.getCurrentLocalDateTime())) {
+    if (recovery.isUsed() || recovery.getExpiredAt().isBefore(CommonUtils.getCurrentLocalDateTime())) {
       throw new CustomCommonException(HttpStatus.BAD_REQUEST, EError.RECOVERY_INVALID);
     }
 
     usersService.recoveryPassword(recovery.getUser(), request);
 
     recovery.setUsed(true);
-    recovery.setUsedDate(CommonUtils.getCurrentLocalDateTime());
+    recovery.setUsedAt(CommonUtils.getCurrentLocalDateTime());
     repository.save(recovery);
 
     // Additional actions like sending confirmation email could go here

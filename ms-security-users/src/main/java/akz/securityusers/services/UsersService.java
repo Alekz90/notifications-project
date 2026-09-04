@@ -83,7 +83,7 @@ public class UsersService implements IUsersService {
 
   @Override
   public void update(User user) {
-    user.setModificationDate(CommonUtils.getCurrentLocalDateTime());
+    user.setUpdatedAt(CommonUtils.getCurrentLocalDateTime());
     repository.save(user);
   }
 }

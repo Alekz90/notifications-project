@@ -38,12 +38,12 @@ public class VerificationsService implements IVerificationsService {
     if (!verification.getCode().equals(code)) {
       throw new CustomCommonException(HttpStatus.CONFLICT, EError.VERIFICATION_INVALID_CODE);
     }
-    if (verification.getExpirationDate().isBefore(CommonUtils.getCurrentLocalDateTime())) {
+    if (verification.getExpiredAt().isBefore(CommonUtils.getCurrentLocalDateTime())) {
       throw new CustomCommonException(HttpStatus.CONFLICT, EError.VERIFICATION_EXPIRED);
     }
 
     verification.setUsed(true);
-    verification.setUsedDate(CommonUtils.getCurrentLocalDateTime());
+    verification.setUsedAt(CommonUtils.getCurrentLocalDateTime());
     verification.getUser().setVerified(true);
 
     repository.save(verification);

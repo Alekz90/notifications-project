@@ -2,7 +2,7 @@ package akz.securityusers.services;
 
 import akz.securityusers.entities.User;
 import akz.securityusers.services.interfaces.IJwtService;
-import akz.commonutils.util.CommonUtils;
+import akz.securityusers.utils.Utils;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
@@ -27,12 +27,12 @@ public class JwtService implements IJwtService {
   private Long expirationTime;
 
   public String generateToken(User user) {
-    Date currentDate = CommonUtils.getCurrentDateTime();
+    Date currentDate = Utils.getCurrentDateTime();
     return Jwts.builder()
         .subject(user.getUsername())
         .claim(ROLE_NAME, user.getRole().name())
         .issuedAt(currentDate)
-        .expiration(CommonUtils.plusSecondsDateTime(currentDate, this.expirationTime))
+        .expiration(Utils.plusSecondsDateTime(currentDate, this.expirationTime))
         .signWith(this.getKey())
         .compact();
   }
@@ -73,6 +73,6 @@ public class JwtService implements IJwtService {
   }
 
   private boolean isTokenExpired(String token) {
-    return this.getExpiration(token).before(CommonUtils.getCurrentDateTime());
+    return this.getExpiration(token).before(Utils.getCurrentDateTime());
   }
 }

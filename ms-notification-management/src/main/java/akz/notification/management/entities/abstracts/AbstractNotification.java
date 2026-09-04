@@ -33,6 +33,15 @@ public abstract class AbstractNotification {
   @Column(name = "updated_at")
   protected LocalDateTime updatedAt;
 
+  /**
+   * Constructs a new AbstractNotification entity with default values.
+   * The default values are:
+   * - deleted: false
+   * - status: PENDING
+   * - sentAt: LocalDateTime with zero time (00:00)
+   * - createdAt: current local date and time
+   * - updatedAt: current local date and time
+   */
   protected AbstractNotification() {
     this.deleted = false;
     this.status = EMessageStatus.PENDING;
@@ -41,6 +50,12 @@ public abstract class AbstractNotification {
     this.updatedAt = CommonUtils.getCurrentLocalDateTime();
   }
 
+  /**
+   * Constructs a new AbstractNotification entity with the specified user ID and title.
+   *
+   * @param userId the ID of the user associated with the notification
+   * @param title  the title of the notification
+   */
   protected AbstractNotification(Long userId, String title) {
     this();
     this.userId = userId;

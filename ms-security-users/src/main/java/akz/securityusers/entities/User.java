@@ -33,7 +33,7 @@ public class User extends AbstractLocalDateFields implements UserDetails {
   private boolean active;
   private boolean blocked;
   private boolean verified;
-  @Column(name = "accept_terms")
+  @Column(name = "accepted_terms")
   private boolean acceptTerms;
 
   /**

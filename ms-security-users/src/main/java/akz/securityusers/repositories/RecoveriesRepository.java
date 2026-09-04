@@ -9,5 +9,5 @@ import java.util.Optional;
 
 @Repository
 public interface RecoveriesRepository extends JpaRepository<Recovery, Long> {
-  Optional<Recovery> findByEmailAndUsedFalseAndExpirationDateAfter(String email, LocalDateTime currentDateTime);
+  Optional<Recovery> findByEmailAndUsedFalseAndExpiredAtAfter(String email, LocalDateTime currentDateTime);
 }

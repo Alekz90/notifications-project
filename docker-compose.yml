@@ -1,45 +1,72 @@
 name: notifications-project
 services:
-    ms-security-users-service:
-        container_name: ms-security-users
-        ports:
-          - "8081:8080"
-        env_file:
-          - .env
-        environment:
-          - USERS_DB_URL=users-db-service
-          - USERS_DB_USER=${USERS_DB_USER}
-          - USERS_DB_PASSWORD=${USERS_DB_PASSWORD}
-        depends_on:
-          - users-db-service
+  ms-security-users-service:
+    build:
+      args:
+        - GITHUB_USERNAME=${GITHUB_USERNAME}
+        - GITHUB_TOKEN=${GITHUB_TOKEN}
+      context: .
+      dockerfile: ms-security-users.dockerfile
+    image: ms-security-users:1.0.0
+    container_name: ms-security-users
+    ports:
+      - "8081:8081"
+    env_file:
+      - .env
+    environment:
+      - USERS_DB_URL=jdbc:postgresql://users-db-service:5432/users
+      - USERS_DB_USER=${USERS_DB_USER}
+      - USERS_DB_PASSWORD=${USERS_DB_PASSWORD}
+    depends_on:
+      - users-db-service
 
-    users-db-service:
-        container_name: users-db
-        image: postgres:15.3
-        env_file:
-          - .env
-        environment:
-          POSTGRES_DB: ${USERS_DB_NAME}
-          POSTGRES_USER: ${USERS_DB_USER}
-          POSTGRES_PASSWORD: ${USERS_DB_PASSWORD}
-        volumes:
-          - users-volume:/var/lib/postgresql/data
-        ports:
-        - "5432:5432"
+  ms-notification-management-service:
+    build:
+      args:
+        - GITHUB_USERNAME=${GITHUB_USERNAME}
+        - GITHUB_TOKEN=${GITHUB_TOKEN}
+      context: .
+      dockerfile: ms-notification-management.dockerfile
+    image: ms-notification-management:1.0.0
+    container_name: ms-notification-management
+    ports:
+      - "8082:8082"
+    env_file:
+      - .env
+    environment:
+      - NOTIFICATIONS_DB_URL=jdbc:postgresql://notifications-db-service:5432/notifications
+      - NOTIFICATIONS_DB_USER=${NOTIFICATIONS_DB_USER}
+      - NOTIFICATIONS_DB_PASSWORD=${NOTIFICATIONS_DB_PASSWORD}
+    depends_on:
+      - notifications-db-service
 
-    notifications-db-service:
-      container_name: notifications-db
-      image: postgres:15.3
-      env_file:
-        - .env
-      environment:
-        POSTGRES_DB: ${NOTIFICATIONS_DB_NAME}
-        POSTGRES_USER: ${NOTIFICATIONS_DB_USER}
-        POSTGRES_PASSWORD: ${NOTIFICATIONS_DB_PASSWORD}
-      volumes:
-        - notifications-volume:/var/lib/postgresql/data
-      ports:
-        - "5433:5432"
+  users-db-service:
+    container_name: users-db
+    image: postgres:15.3
+    env_file:
+      - .env
+    environment:
+      POSTGRES_DB: ${USERS_DB_NAME}
+      POSTGRES_USER: ${USERS_DB_USER}
+      POSTGRES_PASSWORD: ${USERS_DB_PASSWORD}
+    volumes:
+      - users-volume:/var/lib/postgresql/data
+    ports:
+    - "5432:5432"
+
+  notifications-db-service:
+    container_name: notifications-db
+    image: postgres:15.3
+    env_file:
+      - .env
+    environment:
+      POSTGRES_DB: ${NOTIFICATIONS_DB_NAME}
+      POSTGRES_USER: ${NOTIFICATIONS_DB_USER}
+      POSTGRES_PASSWORD: ${NOTIFICATIONS_DB_PASSWORD}
+    volumes:
+      - notifications-volume:/var/lib/postgresql/data
+    ports:
+      - "5433:5432"
 
 volumes:
   users-volume:
@@ -53,7 +80,7 @@ networks:
 
 
 # Move to the directory
-# cd C:/Projects/Notifications/Notifications-project
+# cd C:/Projects/Notifications/notifications-project
 
 # "--build" forced the image building
 # "--env-file .env" environment file

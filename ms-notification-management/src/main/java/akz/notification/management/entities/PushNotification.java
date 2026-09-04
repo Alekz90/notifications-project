@@ -1,6 +1,5 @@
 package akz.notification.management.entities;
 
-import akz.notification.management.dto.NotificationDto;
 import akz.notification.management.entities.abstracts.AbstractNotification;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -33,30 +32,17 @@ public class PushNotification extends AbstractNotification {
   @Column(length = 100)
   private String recipient;
 
-  public PushNotification(Long userId, NotificationDto.Register notificationDto) {
-    super(userId, notificationDto.title());
-    this.body = notificationDto.body();
-    this.recipient = notificationDto.recipient();
-  }
-
   /**
-   * Builds a push notification entity from the provided user ID and NotificationDto.Register object.
+   * Constructor for creating a new PushNotification instance.
    *
-   * @param userId the ID of the user associated with the notification
-   * @param notificationDto the DTO containing notification details
-   * @return a new Notification entity
+   * @param userId    the ID of the user associated with the notification
+   * @param title     the title of the notification
+   * @param body      the body content of the notification
+   * @param recipient the recipient's identifier for the push notification
    */
-  public static PushNotification create(Long userId, NotificationDto.Register notificationDto) {
-    return new PushNotification(userId, notificationDto);
-  }
-
-  /**
-   * Modifies the current push notification entity with the details from the provided NotificationDto.Register object.
-   * @param notificationDto the DTO containing notification details
-   */
-  public void modify(NotificationDto.Register notificationDto) {
-    this.title = notificationDto.title();
-    this.body = notificationDto.body();
-    this.recipient = notificationDto.recipient();
+  public PushNotification(Long userId, String title, String body, String recipient) {
+    super(userId, title);
+    this.body = body;
+    this.recipient = recipient;
   }
 }

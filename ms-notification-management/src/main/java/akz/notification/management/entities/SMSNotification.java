@@ -1,6 +1,5 @@
 package akz.notification.management.entities;
 
-import akz.notification.management.dto.NotificationDto;
 import akz.notification.management.entities.abstracts.AbstractNotification;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -35,30 +34,17 @@ public class SMSNotification extends AbstractNotification {
   @Column(length = 10)
   private String recipient;
 
-  public SMSNotification(Long userId, NotificationDto.Register notificationDto) {
-    super(userId, notificationDto.title());
-    this.body = notificationDto.body();
-    this.recipient = notificationDto.recipient();
-  }
-
   /**
-   * Builds a SMS notification entity from the provided user ID and NotificationDto.Register object.
+   * Constructor for creating a new SMSNotification instance.
    *
-   * @param userId the ID of the user associated with the notification
-   * @param notificationDto the DTO containing notification details
-   * @return a new Notification entity
+   * @param userId    the ID of the user associated with the notification
+   * @param title     the title of the notification
+   * @param body      the body content of the notification
+   * @param recipient the recipient's phone number for the SMS notification
    */
-  public static SMSNotification create(Long userId, NotificationDto.Register notificationDto) {
-    return new SMSNotification(userId, notificationDto);
-  }
-
-  /**
-   * Modifies the current SMS notification entity with the details from the provided NotificationDto.Register object.
-   * @param notificationDto the DTO containing notification details
-   */
-  public void modify(NotificationDto.Register notificationDto) {
-    this.title = notificationDto.title();
-    this.body = notificationDto.body();
-    this.recipient = notificationDto.recipient();
+  public SMSNotification(Long userId, String title, String body, String recipient) {
+    super(userId, title);
+    this.body = body;
+    this.recipient = recipient;
   }
 }

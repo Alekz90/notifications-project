@@ -20,10 +20,10 @@ public class Recovery extends AbstractLocalDateFields {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
   private String email;
-  @Column(name = "expiration_date")
-  private LocalDateTime expirationDate;
-  @Column(name = "used_date")
-  private LocalDateTime usedDate;
+  @Column(name = "expired_at")
+  private LocalDateTime expiredAt;
+  @Column(name = "used_at")
+  private LocalDateTime usedAt;
   private boolean used;
 
   @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
@@ -39,8 +39,8 @@ public class Recovery extends AbstractLocalDateFields {
     super();
     this.email = email;
     this.user = user;
-    this.expirationDate = CommonUtils.getCurrentLocalDateTime().plusHours(Constants.VERIFICATION_EXPIRATION_HOURS);
-    this.usedDate = CommonUtils.getDateTimeZero();
+    this.expiredAt = CommonUtils.getCurrentLocalDateTime().plusHours(Constants.VERIFICATION_EXPIRATION_HOURS);
+    this.usedAt = CommonUtils.getDateTimeZero();
     this.used = false;
   }
 }

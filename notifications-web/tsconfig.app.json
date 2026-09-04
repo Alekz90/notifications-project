@@ -1,0 +1,40 @@
+{
+  "compilerOptions": {
+    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
+    "target": "es2023",
+    "lib": ["ES2023", "DOM"],
+    "module": "esnext",
+    "types": ["vite/client"],
+    "allowArbitraryExtensions": true,
+    "skipLibCheck": true,
+    "paths": {
+      "@/*": ["./src/*"],
+      "@public/*": ["./src/app/public/*"],
+      "@management/*": ["./src/app/management/*"],
+      "@auth/*": ["./src/app/public/auth/*"],
+      "@notifications/*": ["./src/app/management/notifications/*"],
+      "@utils/*": ["./src/app/classes/utils/*"],
+      "@enums/*": ["./src/app/classes/utils/enums/*"],
+      "@interfaces/*": ["./src/app/classes/interfaces/*"],
+      "@services/*": ["./src/app/classes/services/*"],
+      "@mocks/*": ["./src/app/classes/mocks/*"],
+      "@context/*": ["./src/app/context/*"],
+      "@components/*": ["./src/app/components/*"]
+    },
+
+    /* Bundler mode */
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "verbatimModuleSyntax": true,
+    "moduleDetection": "force",
+    "noEmit": true,
+    "jsx": "react-jsx",
+
+    /* Linting */
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "erasableSyntaxOnly": true,
+    "noFallthroughCasesInSwitch": true
+  },
+  "include": ["src"],
+}
