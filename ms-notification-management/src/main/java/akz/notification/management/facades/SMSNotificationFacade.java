@@ -1,8 +1,12 @@
 package akz.notification.management.facades;
 
 import akz.notification.management.dto.NotificationModel;
+import akz.notification.management.dto.PaginationNotificationModel;
+import akz.notification.management.entities.EmailNotification;
+import akz.notification.management.entities.SMSNotification;
 import akz.notification.management.repositories.SMSNotificationRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
 
@@ -35,15 +39,18 @@ public class SMSNotificationFacade implements INotificationFacade {
    * @param userId the ID of the user
    * @param size the number of notifications per page
    * @param page the page number (1-based)
-   * @return a list of NotificationModel DTOs for the specified user
+   * @return a PaginationNotificationModel containing the list of NotificationModel DTOs for the specified user
    */
   @Override
-  public List<NotificationModel> getAllByUserId(Long userId, int size, int page) {
-    return repository.findByUserIdAndDeletedFalse(userId, PageRequest.of(page - 1, size))
-      .getContent()
-      .stream()
-      .map(NotificationModel::fromEntity)
-      .toList();
+  public PaginationNotificationModel getAllByUserId(Long userId, int size, int page) {
+    Page<SMSNotification> smsNotifications =
+      repository.findByUserIdAndDeletedFalse(userId, PageRequest.of(page - 1, size));
+
+    return PaginationNotificationModel.fromSMSEntities(
+      smsNotifications.getContent(),
+      smsNotifications.getTotalElements(),
+      smsNotifications.getTotalPages()
+    );
   }
 
   /**

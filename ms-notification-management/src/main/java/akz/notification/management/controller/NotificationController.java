@@ -28,16 +28,16 @@ public class NotificationController {
 
   @GetMapping(V1 + "/{id}")
   @Operation(summary = "Get notification by ID")
-  public ResponseEntity<ResultDto<NotificationDto.Response>> getById(
-    @PathVariable long id, @RequestParam(required = false, defaultValue = "NONE") ECanal canal
+  public ResponseEntity<ResultDto<NotificationDto.ResponseDetail>> getById(
+    @PathVariable Long id, @RequestParam(required = false, defaultValue = "NONE") ECanal canal
   ) {
     return ResponseEntity.ok(new ResultDto<>(service.getById(id, canal)));
   }
 
   @GetMapping(V1 + "/users/{userId}")
   @Operation(summary = "Get all notifications by user ID")
-  public ResponseEntity<ResultDto<List<NotificationDto.Response>>> getAllByUserId(
-    @PathVariable long userId,
+  public ResponseEntity<ResultDto<NotificationDto.PaginationResponse>> getAllByUserId(
+    @PathVariable Long userId,
     @RequestParam(required = false, defaultValue = "10") int size,
     @RequestParam(required = false, defaultValue =  "1") int page,
     @RequestParam(required = false, defaultValue = "NONE") ECanal canal
@@ -47,11 +47,11 @@ public class NotificationController {
 
   @PostMapping(V1 + "/users/{userId}")
   @Operation(summary = "Create notification")
-  public ResponseEntity<ResultDto<NotificationDto.Response>> create(
-    @PathVariable long userId,
+  public ResponseEntity<ResultDto<NotificationDto.ResponseDetail>> create(
+    @PathVariable Long userId,
     @RequestBody @Validated(DefaultGroup.class) NotificationDto.Register notificationDto
   ) {
-    NotificationDto.Response response = service.create(userId, notificationDto);
+    NotificationDto.ResponseDetail response = service.create(userId, notificationDto);
     return ResponseEntity
       .created(CommonUtils.buildUriPost("/notifications/v1/", response.id()))
       .body(new ResultDto<>(response));
@@ -59,18 +59,18 @@ public class NotificationController {
 
   @PutMapping(V1 + "/{id}")
   @Operation(summary = "Update notification")
-  public ResponseEntity<ResultDto<NotificationDto.Response>> update(
-    @PathVariable long id,
+  public ResponseEntity<ResultDto<NotificationDto.ResponseDetail>> update(
+    @PathVariable Long id,
     @RequestBody @Validated(DefaultGroup.class) NotificationDto.Register notificationDto
   ) {
-    NotificationDto.Response response = service.update(id, notificationDto);
+    NotificationDto.ResponseDetail response = service.update(id, notificationDto);
     return ResponseEntity.ok(new ResultDto<>(response));
   }
 
   @DeleteMapping(V1 + "/{id}")
   @Operation(summary = "Delete notification")
   public ResponseEntity<Void> delete(
-    @PathVariable long id, @RequestHeader LocalDateTime updatedAt,
+    @PathVariable Long id, @RequestHeader LocalDateTime updatedAt,
     @RequestParam(required = false, defaultValue = "NONE") ECanal canal
   ) {
     service.delete(id, updatedAt, canal);
@@ -80,7 +80,7 @@ public class NotificationController {
   @PatchMapping(V1 + "/{id}/send")
   @Operation(summary = "Send notification")
   public ResponseEntity<Void> send(
-    @PathVariable long id, @RequestHeader LocalDateTime updatedAt,
+    @PathVariable Long id, @RequestHeader LocalDateTime updatedAt,
     @RequestParam(required = false, defaultValue = "NONE") ECanal canal
   ) {
     service.send(id,  updatedAt, canal);

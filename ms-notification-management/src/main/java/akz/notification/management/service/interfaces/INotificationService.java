@@ -5,23 +5,22 @@ import akz.notification.management.dto.NotificationDto;
 import akz.notification.management.util.enums.ECanal;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 public interface INotificationService {
 
   /**
    * Get a notification by its ID.
    * @param id notification ID
-   * @return notification response
+   * @return notification detail response
    */
-  NotificationDto.Response getById(Long id, ECanal canal);
+  NotificationDto.ResponseDetail getById(Long id, ECanal canal);
 
   /**
    * Get all notifications for a specific user by their user ID.
    * @param userId user ID
-   * @return list of notification responses
+   * @return paginated notification responses
    */
-  List<NotificationDto.Response> getAllByUserId(Long userId, int size, int page, ECanal canal);
+  NotificationDto.PaginationResponse getAllByUserId(Long userId, int size, int page, ECanal canal);
 
   /**
    * Create a new notification.
@@ -29,15 +28,15 @@ public interface INotificationService {
    * @param notificationDto notification data
    * @return notification response
    */
-  NotificationDto.Response create(Long userId, NotificationDto.Register notificationDto);
+  NotificationDto.ResponseDetail create(Long userId, NotificationDto.Register notificationDto);
 
   /**
    * Update an existing notification by its ID.
    * @param id notification ID
    * @param notificationDto notification data
-   * @return notification response
+   * @return notification detail response
    */
-  NotificationDto.Response update(Long id, NotificationDto.Register notificationDto);
+  NotificationDto.ResponseDetail update(Long id, NotificationDto.Register notificationDto);
 
   /**
    * Send a notification by its ID.

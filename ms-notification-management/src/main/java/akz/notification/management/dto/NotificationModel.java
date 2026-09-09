@@ -19,7 +19,8 @@ public class NotificationModel {
   private Long id;
   private String title;
   private String body;
-  private String recipient;
+  private String from;
+  private String to;
   private EMessageStatus status;
   private Long userId;
   private boolean deleted;
@@ -39,7 +40,8 @@ public class NotificationModel {
       .id(email.getId())
       .title(email.getTitle())
       .body(email.getBody())
-      .recipient(email.getRecipient())
+      .from(email.getSender())
+      .to(email.getReceiver())
       .status(email.getStatus())
       .deleted(email.isDeleted())
       .sentAt(email.getSentAt())
@@ -55,7 +57,7 @@ public class NotificationModel {
    * @return an EmailNotification entity representing the notification model
    */
   public static EmailNotification toEntityEmail(NotificationModel model) {
-    return new EmailNotification(model.getUserId(), model.getTitle(), model.getBody(), model.getRecipient());
+    return new EmailNotification(model.getUserId(), model.getTitle(), model.getBody(), model.getFrom(), model.getTo());
   }
 
   /**
@@ -70,7 +72,8 @@ public class NotificationModel {
       .id(sms.getId())
       .title(sms.getTitle())
       .body(sms.getBody())
-      .recipient(sms.getRecipient())
+      .from(sms.getSender())
+      .to(sms.getReceiver())
       .status(sms.getStatus())
       .deleted(sms.isDeleted())
       .sentAt(sms.getSentAt())
@@ -86,7 +89,7 @@ public class NotificationModel {
    * @return an SMSNotification entity representing the notification model
    */
   public static SMSNotification toEntitySMS(NotificationModel model) {
-    return new SMSNotification(model.getUserId(), model.getTitle(), model.getBody(), model.getRecipient());
+    return new SMSNotification(model.getUserId(), model.getTitle(), model.getBody(), model.getFrom(), model.getTo());
   }
 
   /**
@@ -101,7 +104,8 @@ public class NotificationModel {
       .id(push.getId())
       .title(push.getTitle())
       .body(push.getBody())
-      .recipient(push.getRecipient())
+      .from(push.getSender())
+      .to(push.getReceiver())
       .status(push.getStatus())
       .deleted(push.isDeleted())
       .sentAt(push.getSentAt())
@@ -117,7 +121,7 @@ public class NotificationModel {
    * @return a PushNotification entity representing the notification model
    */
   public static PushNotification toEntityPush(NotificationModel model) {
-    return new PushNotification(model.getUserId(), model.getTitle(), model.getBody(), model.getRecipient());
+    return new PushNotification(model.getUserId(), model.getTitle(), model.getBody(), model.getFrom(), model.getTo());
   }
 
   /**
@@ -128,6 +132,7 @@ public class NotificationModel {
   public void modify(NotificationDto.Register notificationDto) {
     this.title = notificationDto.title();
     this.body = notificationDto.body();
-    this.recipient = notificationDto.recipient();
+    this.from = notificationDto.from();
+    this.to = notificationDto.to();
   }
 }

@@ -6,5 +6,5 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum EMessageStatus {
-  PENDING, SENT, FAILED
+  PENDING, SENDING, SENT, FAILED
 }

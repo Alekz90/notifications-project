@@ -31,8 +31,11 @@ public class SMSNotification extends AbstractNotification {
   @Column(length = 160)
   private String body;
 
-  @Column(length = 10)
-  private String recipient;
+  @Column(length = 15)
+  private String sender;
+
+  @Column(length = 15)
+  private String receiver;
 
   /**
    * Constructor for creating a new SMSNotification instance.
@@ -40,11 +43,13 @@ public class SMSNotification extends AbstractNotification {
    * @param userId    the ID of the user associated with the notification
    * @param title     the title of the notification
    * @param body      the body content of the notification
-   * @param recipient the recipient's phone number for the SMS notification
+   * @param from the from's phone number for the SMS notification
+   * @param to the to's phone number for the SMS notification
    */
-  public SMSNotification(Long userId, String title, String body, String recipient) {
+  public SMSNotification(Long userId, String title, String body, String from, String to) {
     super(userId, title);
     this.body = body;
-    this.recipient = recipient;
+    this.sender = from;
+    this.receiver = to;
   }
 }

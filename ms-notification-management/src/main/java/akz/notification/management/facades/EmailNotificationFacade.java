@@ -1,8 +1,11 @@
 package akz.notification.management.facades;
 
 import akz.notification.management.dto.NotificationModel;
+import akz.notification.management.dto.PaginationNotificationModel;
+import akz.notification.management.entities.EmailNotification;
 import akz.notification.management.repositories.EmailNotificationRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
 
@@ -38,12 +41,15 @@ public class EmailNotificationFacade implements INotificationFacade {
    * @return a list of NotificationModel DTOs for the specified user
    */
   @Override
-  public List<NotificationModel> getAllByUserId(Long userId, int size, int page) {
-    return repository.findByUserIdAndDeletedFalse(userId, PageRequest.of(page - 1, size))
-      .getContent()
-      .stream()
-      .map(NotificationModel::fromEntity)
-      .toList();
+  public PaginationNotificationModel getAllByUserId(Long userId, int size, int page) {
+    Page<EmailNotification> emailNotifications =
+      repository.findByUserIdAndDeletedFalse(userId, PageRequest.of(page - 1, size));
+
+    return PaginationNotificationModel.fromEmailEntities(
+      emailNotifications.getContent(),
+      emailNotifications.getTotalElements(),
+      emailNotifications.getTotalPages()
+    );
   }
 
   /**

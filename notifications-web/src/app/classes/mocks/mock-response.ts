@@ -7,21 +7,33 @@ export const MOCK_EMAIL_NOTIFICATIONS_RESPONSE = {
   id: Constants.SUCCESS_CODE,
   message: '',
   date: new Date().toISOString(),
-  result: MOCK_EMAIL_NOTIFICATIONS
-}
+  result: {
+    totalElements: 0,
+    totalPages: 0,
+    notifications: MOCK_EMAIL_NOTIFICATIONS
+  }
+};
 
 export const MOCK_SMS_NOTIFICATIONS_RESPONSE = {
   id: Constants.SUCCESS_CODE,
   message: '',
   date: new Date().toISOString(),
-  result: MOCK_SMS_NOTIFICATIONS
+  result: {
+    totalElements: 0,
+    totalPages: 0,
+    notifications: MOCK_SMS_NOTIFICATIONS
+  }
 };
 
 export const MOCK_PUSH_NOTIFICATIONS_RESPONSE = {
   id: Constants.SUCCESS_CODE,
   message: '',
   date: new Date().toISOString(),
-  result: MOCK_PUSH_NOTIFICATIONS
+  result: {
+    totalElements: 0,
+    totalPages: 0,
+    notifications: MOCK_PUSH_NOTIFICATIONS
+  }
 };
 
 export const MOCK_DELETE_NOTIFICATION_RESPONSE = {
@@ -42,9 +54,10 @@ const MOCK_NEW_NOTIFICATION: NotificationDto = {
   id: 100,
   title: '',
   body: '',
-  recipient: '',
+  to: '',
   status: 'PENDING',
   sentAt: new Date().toISOString(),
+  createdAt: new Date().toISOString(),
   updatedAt: new Date().toISOString(),
   canal: 'EMAIL',
 };

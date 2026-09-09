@@ -8,10 +8,11 @@ interface Props {
   type: string;
   label: string;
   placeholder: string;
+  disabled?: boolean;
   error?: FieldError;
 }
 
-export const CustomFormInput = ({ control, name, type, label, placeholder, error }: Props) => {
+export const CustomFormInput = ({ control, name, type, label, placeholder, error, disabled = false }: Props) => {
   return (
     <div className="grid gap-2">
       <Label className="ml-1" htmlFor={ name }>{ label }</Label>
@@ -21,7 +22,7 @@ export const CustomFormInput = ({ control, name, type, label, placeholder, error
         render={
           ({ field }) =>  
             <Input
-              id={ name } type={ type } placeholder={ placeholder } { ...field }
+              id={ name } type={ type } placeholder={ placeholder } { ...field } disabled={ disabled }
               className={ error ? "border-red-500" : "" }
             />
         }

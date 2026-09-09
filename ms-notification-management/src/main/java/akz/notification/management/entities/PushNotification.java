@@ -27,10 +27,15 @@ public class PushNotification extends AbstractNotification {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
+
   @Column(length = 200)
   private String body;
+
   @Column(length = 100)
-  private String recipient;
+  private String sender;
+
+  @Column(length = 100)
+  private String receiver;
 
   /**
    * Constructor for creating a new PushNotification instance.
@@ -38,11 +43,13 @@ public class PushNotification extends AbstractNotification {
    * @param userId    the ID of the user associated with the notification
    * @param title     the title of the notification
    * @param body      the body content of the notification
-   * @param recipient the recipient's identifier for the push notification
+   * @param from the from's identifier for the push notification
+   * @param to the to's identifier for the push notification
    */
-  public PushNotification(Long userId, String title, String body, String recipient) {
+  public PushNotification(Long userId, String title, String body, String from, String to) {
     super(userId, title);
     this.body = body;
-    this.recipient = recipient;
+    this.sender = from;
+    this.receiver = to;
   }
 }

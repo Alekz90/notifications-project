@@ -32,8 +32,8 @@ public class NotificationService implements INotificationService {
    * @return notification response
    */
   @Override
-  public NotificationDto.Response getById(Long id, ECanal canal) {
-    return NotificationDto.Response.fromEntity(this.findById(id, canal));
+  public NotificationDto.ResponseDetail getById(Long id, ECanal canal) {
+    return NotificationDto.ResponseDetail.fromEntity(this.findById(id, canal));
   }
 
   /**
@@ -46,11 +46,9 @@ public class NotificationService implements INotificationService {
    * @return list of notification responses
    */
   @Override
-  public List<NotificationDto.Response> getAllByUserId(Long userId, int size, int page, ECanal canal) {
-    return strategies.get(canal.name()).getAllByUserId(userId, size, page)
-      .stream()
-      .map(NotificationDto.Response::fromEntity)
-      .toList();
+  public NotificationDto.PaginationResponse getAllByUserId(Long userId, int size, int page, ECanal canal) {
+    return NotificationDto.PaginationResponse.build(
+      strategies.get(canal.name()).getAllByUserId(userId, size, page));
   }
 
   /**
@@ -61,9 +59,9 @@ public class NotificationService implements INotificationService {
    * @return notification response
    */
   @Override
-  public NotificationDto.Response create(Long userId, NotificationDto.Register notificationDto) {
+  public NotificationDto.ResponseDetail create(Long userId, NotificationDto.Register notificationDto) {
     validateConstraintsCreation(notificationDto);
-    return NotificationDto.Response.fromEntity(
+    return NotificationDto.ResponseDetail.fromEntity(
               strategies.get(notificationDto.canal().name()).save(
                 NotificationDto.Register.toNotificationModel(userId, notificationDto)));
   }
@@ -76,13 +74,13 @@ public class NotificationService implements INotificationService {
    * @return notification response
    */
   @Override
-  public NotificationDto.Response update(Long id, NotificationDto.Register notificationDto) {
+  public NotificationDto.ResponseDetail update(Long id, NotificationDto.Register notificationDto) {
     validateConstraintsActualization(notificationDto);
     NotificationModel notification = this.findById(id, notificationDto.canal());
     this.validateModify(notification, notificationDto.updatedAt());
     notification.modify(notificationDto);
 
-    return NotificationDto.Response.fromEntity(this.update(notification, notificationDto.canal()));
+    return NotificationDto.ResponseDetail.fromEntity(this.update(notification, notificationDto.canal()));
   }
 
   /**

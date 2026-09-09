@@ -32,19 +32,24 @@ public class EmailNotification extends AbstractNotification {
   private String body;
 
   @Column(length = 150)
-  private String recipient;
+  private String sender;
+
+  @Column(length = 150)
+  private String receiver;
 
   /**
-   * Constructs a new EmailNotification with the specified user ID, title, body, and recipient.
+   * Constructs a new EmailNotification with the specified user ID, title, body, sender, and receiver.
    *
    * @param userId    the ID of the user associated with this notification
    * @param title     the title of the notification
    * @param body      the body content of the email notification
-   * @param recipient the recipient's email address
+   * @param from the from's email address
+   * @param to the to's email address
    */
-  public EmailNotification(Long userId, String title, String body, String recipient) {
+  public EmailNotification(Long userId, String title, String body, String from, String to) {
     super(userId, title);
     this.body = body;
-    this.recipient = recipient;
+    this.sender = from;
+    this.receiver = to;
   }
 }
