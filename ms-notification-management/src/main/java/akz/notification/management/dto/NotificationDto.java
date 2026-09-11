@@ -6,7 +6,7 @@ import akz.commonutils.annotation.ValidSpecialText;
 import akz.commonutils.annotation.ValidTitleText;
 import akz.notification.management.dto.validations.NotificationGroup.*;
 import akz.notification.management.util.enums.ECanal;
-import akz.notification.management.util.enums.EMessageStatus;
+import akz.notification.management.util.enums.EStatus;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -63,7 +63,7 @@ public class NotificationDto {
   }
 
   @Schema(name = "NotificationDto.ResponseAll", description = "DTO for replying with the notification data")
-  public record ResponseAll(Long id, String title, String body, String to, EMessageStatus status, LocalDateTime updatedAt) {
+  public record ResponseAll(Long id, String title, String body, String to, EStatus status, LocalDateTime updatedAt) {
 
     public static ResponseAll fromEntity(NotificationModel model) {
       return new ResponseAll(
@@ -88,7 +88,7 @@ public class NotificationDto {
   }
 
   @Schema(name = "NotificationDto.ResponseDetail", description = "DTO for replying with the notification data")
-  public record ResponseDetail(Long id, String title, String body, String from, String to, EMessageStatus status,
+  public record ResponseDetail(Long id, String title, String body, String from, String to, EStatus status,
                                LocalDateTime sentAt, LocalDateTime createdAt, LocalDateTime updatedAt) {
 
     public static ResponseDetail fromEntity(NotificationModel email) {

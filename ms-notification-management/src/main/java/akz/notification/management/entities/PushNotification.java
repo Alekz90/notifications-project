@@ -1,11 +1,15 @@
 package akz.notification.management.entities;
 
+import akz.notification.management.dto.NotificationModel;
 import akz.notification.management.entities.abstracts.AbstractNotification;
+import akz.notification.management.util.enums.EStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.time.LocalDateTime;
 
 /**
  * Notification entity class representing a notification record in the database.
@@ -43,13 +47,35 @@ public class PushNotification extends AbstractNotification {
    * @param userId    the ID of the user associated with the notification
    * @param title     the title of the notification
    * @param body      the body content of the notification
-   * @param from the from's identifier for the push notification
-   * @param to the to's identifier for the push notification
+   * @param from      the from's identifier for the push notification
+   * @param to        the to's identifier for the push notification
    */
   public PushNotification(Long userId, String title, String body, String from, String to) {
     super(userId, title);
     this.body = body;
     this.sender = from;
     this.receiver = to;
+  }
+
+  /**
+   * Updates the properties of this PushNotification with the specified values.
+   * @param model the NotificationModel containing the updated values
+   */
+  public PushNotification(NotificationModel model) {
+    super(model);
+    this.body = model.getBody();
+    this.sender = model.getTo();
+    this.receiver = model.getFrom();
+  }
+
+  /**
+   * Updates the properties of this PushNotification with the specified values.
+   * @param model the NotificationModel containing the updated values
+   */
+  public void update(NotificationModel model) {
+    super.update(model);
+    this.setBody(model.getBody());
+    this.setSender(model.getTo());
+    this.setReceiver(model.getFrom());
   }
 }

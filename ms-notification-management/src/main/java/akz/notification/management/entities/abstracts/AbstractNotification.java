@@ -1,7 +1,8 @@
 package akz.notification.management.entities.abstracts;
 
 import akz.commonutils.util.CommonUtils;
-import akz.notification.management.util.enums.EMessageStatus;
+import akz.notification.management.dto.NotificationModel;
+import akz.notification.management.util.enums.EStatus;
 import jakarta.persistence.Column;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -22,7 +23,7 @@ public abstract class AbstractNotification {
   protected String title;
   @Column(length = 10)
   @Enumerated(EnumType.STRING)
-  protected EMessageStatus status;
+  protected EStatus status;
   @Column(name = "user_id")
   protected Long userId;
   protected boolean deleted;
@@ -44,7 +45,7 @@ public abstract class AbstractNotification {
    */
   protected AbstractNotification() {
     this.deleted = false;
-    this.status = EMessageStatus.PENDING;
+    this.status = EStatus.PENDING;
     this.sentAt = CommonUtils.getDateTimeZero();
     this.createdAt = CommonUtils.getCurrentLocalDateTime();
     this.updatedAt = CommonUtils.getCurrentLocalDateTime();
@@ -60,5 +61,30 @@ public abstract class AbstractNotification {
     this();
     this.userId = userId;
     this.title = title;
+  }
+
+  /**
+   * Constructs a new AbstractNotification entity with the specified NotificationModel.
+   * @param model the NotificationModel containing the updated values
+   */
+  protected AbstractNotification(NotificationModel model) {
+    this.title = model.getTitle();
+    this.status = model.getStatus();
+    this.deleted = model.isDeleted();
+    this.sentAt = model.getSentAt();
+    this.createdAt = model.getCreatedAt();
+    this.updatedAt = CommonUtils.getCurrentLocalDateTime();
+  }
+
+  /**
+   * Updates the properties of this AbstractNotification with the specified NotificationModel.
+   * @param model the NotificationModel containing the updated values
+   */
+  protected void update(NotificationModel model) {
+    this.title = model.getTitle();
+    this.status = model.getStatus();
+    this.deleted = model.isDeleted();
+    this.sentAt = model.getSentAt();
+    this.updatedAt = CommonUtils.getCurrentLocalDateTime();
   }
 }

@@ -1,10 +1,10 @@
-package akz.notification.management.util.enums;
+package akz.notifications.util.enums;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public enum EMessageStatus {
+public enum EStatus {
   PENDING, SENDING, SENT, FAILED
 }

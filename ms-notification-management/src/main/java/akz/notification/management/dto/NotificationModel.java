@@ -3,7 +3,7 @@ package akz.notification.management.dto;
 import akz.notification.management.entities.EmailNotification;
 import akz.notification.management.entities.PushNotification;
 import akz.notification.management.entities.SMSNotification;
-import akz.notification.management.util.enums.EMessageStatus;
+import akz.notification.management.util.enums.EStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -21,7 +21,7 @@ public class NotificationModel {
   private String body;
   private String from;
   private String to;
-  private EMessageStatus status;
+  private EStatus status;
   private Long userId;
   private boolean deleted;
   private LocalDateTime sentAt;

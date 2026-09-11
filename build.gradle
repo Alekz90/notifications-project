@@ -22,11 +22,12 @@ subprojects {
         mavenCentral()
         mavenLocal()
 		maven {
-			url = uri("https://maven.pkg.github.com/Alekz90/common-utils")
-			credentials {
-				username = project.findProperty("github.user") ?: System.getenv("GITHUB_USERNAME")
-				password = project.findProperty("github.token") ?: System.getenv("GITHUB_TOKEN")
-			}
+			url uri('../repo') // o tu repositorio remoto
+//			url = uri("https://maven.pkg.github.com/Alekz90/common-utils")
+//			credentials {
+//				username = project.findProperty("github.user") ?: System.getenv("GITHUB_USERNAME")
+//				password = project.findProperty("github.token") ?: System.getenv("GITHUB_TOKEN")
+//			}
 		}
     }
 
@@ -39,19 +40,13 @@ subprojects {
 	dependencies {
         implementation 'akz:common-utils:1.0.0'
 		implementation 'org.springframework.boot:spring-boot-starter-webmvc'
-        implementation group: 'org.springdoc', name: 'springdoc-openapi-starter-webmvc-ui', version: '2.8.12'
-
-        compileOnly 'org.projectlombok:lombok'
-		
-		annotationProcessor 'org.projectlombok:lombok'
-		
 		testImplementation 'org.springframework.boot:spring-boot-starter-webmvc-test'
-		
+        implementation group: 'org.springdoc', name: 'springdoc-openapi-starter-webmvc-ui', version: '2.8.12'
+        compileOnly 'org.projectlombok:lombok'
+		annotationProcessor 'org.projectlombok:lombok'
 		testCompileOnly 'org.projectlombok:lombok'
-		
+		testAnnotationProcessor 'org.projectlombok:lombok'
 		testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-		
-		testAnnotationProcessor 'org.projectlombok:lombok'	
 	}
 }
 

@@ -4,10 +4,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class MsNotificationsApplication {
+public class MsKafkaNotificationsApplication {
 
-  public static void main(String[] args) {
-    SpringApplication.run(MsNotificationsApplication.class, args);
-  }
+	public static void main(String[] args) {
+		SpringApplication.run(MsKafkaNotificationsApplication.class, args);
+	}
 
 }

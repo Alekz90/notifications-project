@@ -3,19 +3,21 @@ package akz.notification.management.service;
 import akz.commonutils.util.CommonUtils;
 import akz.notification.management.dto.NotificationDto;
 import akz.notification.management.dto.NotificationModel;
+import akz.notification.management.dto.kafka.KafkaNotificationResponseDto;
+import akz.notification.management.dto.kafka.KafkaNotificationSendingDto;
 import akz.notification.management.dto.validations.NotificationGroup;
 import akz.notification.management.exceptions.CustomException;
 import akz.notification.management.facades.INotificationFacade;
+import akz.notification.management.service.interfaces.IKafkaNotificationProducerService;
 import akz.notification.management.service.interfaces.INotificationService;
 import akz.notification.management.util.enums.ECanal;
 import akz.notification.management.util.enums.EError;
-import akz.notification.management.util.enums.EMessageStatus;
+import akz.notification.management.util.enums.EStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Map;
 
 @Service
@@ -23,6 +25,7 @@ import java.util.Map;
 public class NotificationService implements INotificationService {
 
   private final Map<String, INotificationFacade> strategies;
+  private final IKafkaNotificationProducerService kafkaService;
 
   /**
    * Get a notification by its ID.
@@ -94,9 +97,9 @@ public class NotificationService implements INotificationService {
   public void send(Long id, LocalDateTime updatedAt, ECanal canal) {
     NotificationModel notification = this.findById(id, canal);
     this.validateModify(notification, updatedAt);
-    notification.setStatus(EMessageStatus.SENT);
-    notification.setUpdatedAt(CommonUtils.getCurrentLocalDateTime());
+    notification.setStatus(EStatus.SENDING);
 
+    kafkaService.sendNotificationEvent(KafkaNotificationSendingDto.from(notification, canal));
     this.update(notification, canal);
   }
 
@@ -112,14 +115,28 @@ public class NotificationService implements INotificationService {
     NotificationModel notification = this.findById(id, canal);
     this.validateModify(notification, updatedAt);
     notification.setDeleted(true);
-    notification.setUpdatedAt(CommonUtils.getCurrentLocalDateTime());
 
     this.update(notification, canal);
   }
 
   /**
-   * Find a notification by its ID.
+   * Update the status of a notification to "sent" based on the Kafka notification response data.
    *
+   * @param kafkaNotificationDto Kafka notification response data
+   */
+  @Override
+  public void updateStatusSending(KafkaNotificationResponseDto kafkaNotificationDto) {
+    NotificationModel notification = this.findById(kafkaNotificationDto.getId(), kafkaNotificationDto.getCanal());
+    if (EStatus.SENT == kafkaNotificationDto.getStatus()) {
+      notification.setSentAt(kafkaNotificationDto.getSentAt());
+    }
+    notification.setStatus(kafkaNotificationDto.getStatus());
+
+    this.update(notification, kafkaNotificationDto.getCanal());
+  }
+
+  /**
+   * Find a notification by its ID.
    * @param id notification ID
    * @return notification model
    * @throws CustomException if the notification is not found
@@ -136,9 +153,8 @@ public class NotificationService implements INotificationService {
    */
   private void validateModify(NotificationModel notification, LocalDateTime updatedAt) {
     CommonUtils.validateUpdatedRecord(notification.getUpdatedAt(), updatedAt);
-    if (EMessageStatus.PENDING != notification.getStatus()) {
-      throw new CustomException(HttpStatus.CONFLICT, EError.SENT_NOTIFICATION);
-    }
+    EStatus.validToSend(notification.getStatus());
+
     if (notification.isDeleted()) {
       throw new CustomException(HttpStatus.CONFLICT, EError.DELETED_NOTIFICATION);
     }
@@ -146,19 +162,16 @@ public class NotificationService implements INotificationService {
 
   /**
    * Update a notification model in the database.
-   *
    * @param notification the notification model to update
    * @param canal the canal type of the notification
    * @return the updated notification model
    */
   private NotificationModel update(NotificationModel notification, ECanal canal) {
-    notification.setUpdatedAt(CommonUtils.getCurrentLocalDateTime());
-    return strategies.get(canal.name()).save(notification);
+    return strategies.get(canal.name()).update(notification);
   }
 
   /**
    * Validate the constraints of a notification DTO based on its canal type.
-   *
    * @param notificationDto the notification DTO to validate
    */
   private void validateConstraintsCreation(NotificationDto.Register notificationDto) {
@@ -172,7 +185,6 @@ public class NotificationService implements INotificationService {
 
   /**
    * Validate the constraints of a notification DTO based on its canal type.
-   *
    * @param notificationDto the notification DTO to validate
    */
   private void validateConstraintsActualization(NotificationDto.Register notificationDto) {

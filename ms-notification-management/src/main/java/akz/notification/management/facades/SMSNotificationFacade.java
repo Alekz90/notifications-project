@@ -4,13 +4,15 @@ import akz.notification.management.dto.NotificationModel;
 import akz.notification.management.dto.PaginationNotificationModel;
 import akz.notification.management.entities.EmailNotification;
 import akz.notification.management.entities.SMSNotification;
+import akz.notification.management.exceptions.CustomException;
 import akz.notification.management.repositories.SMSNotificationRepository;
+import akz.notification.management.util.enums.EError;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
 import java.util.Optional;
 
 import static akz.notification.management.util.Constants.SMS_CANAL_NAME;
@@ -62,5 +64,18 @@ public class SMSNotificationFacade implements INotificationFacade {
   @Override
   public NotificationModel save(NotificationModel notificationModel) {
     return NotificationModel.fromEntity(repository.save(NotificationModel.toEntitySMS(notificationModel)));
+  }
+
+  /**
+   * Update an existing SMS notification.
+   * @param notificationModel the NotificationModel DTO to be updated
+   * @return the updated NotificationModel DTO
+   */
+  @Override
+  public NotificationModel update(NotificationModel notificationModel) {
+    SMSNotification entity = repository.findByIdAndDeletedFalse(notificationModel.getId())
+      .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, EError.NOTIFICATION_NOT_FOUND));
+    entity.update(notificationModel);
+    return NotificationModel.fromEntity(repository.save(entity));
   }
 }

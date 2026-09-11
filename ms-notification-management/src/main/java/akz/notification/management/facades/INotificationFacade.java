@@ -9,4 +9,5 @@ public interface INotificationFacade {
   Optional<NotificationModel> findById(Long id);
   PaginationNotificationModel getAllByUserId(Long userId, int size, int page);
   NotificationModel save(NotificationModel notificationModel);
+  NotificationModel update(NotificationModel notificationModel);
 }

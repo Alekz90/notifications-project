@@ -11,8 +11,8 @@ public enum EError implements GenericEnum<String> {
   NOTIFICATION_NOT_FOUND                ("0001", "Notification wasn't found."),
   BAD_EMAIL_FORMAT                      ("0002", "Email format is invalid."),
   BAD_PHONE_FORMAT                      ("0003", "Phone format is invalid."),
-  SENT_NOTIFICATION                     ("0004", "This notification already sends."),
-  DELETED_NOTIFICATION                  ("0005", "This notification already deleted."),
+  SENT_NOTIFICATION                     ("0004", "This notification has already been sent."),
+  DELETED_NOTIFICATION                  ("0005", "This notification has already been deleted."),
   INVALID_CANAL                         ("0006", "Invalid canal.");
 
   private final String id;

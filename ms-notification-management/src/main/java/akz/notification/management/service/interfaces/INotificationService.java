@@ -2,6 +2,7 @@ package akz.notification.management.service.interfaces;
 
 
 import akz.notification.management.dto.NotificationDto;
+import akz.notification.management.dto.kafka.KafkaNotificationResponseDto;
 import akz.notification.management.util.enums.ECanal;
 
 import java.time.LocalDateTime;
@@ -53,4 +54,10 @@ public interface INotificationService {
    * @param canal notification channel
    */
   void delete(Long id, LocalDateTime updatedAt, ECanal canal);
+
+  /**
+   * Update the status of a notification to "sending" based on the Kafka notification response data.
+   * @param notificationData Kafka notification response data
+   */
+  void updateStatusSending(KafkaNotificationResponseDto notificationData);
 }
