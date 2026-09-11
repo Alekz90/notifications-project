@@ -72,7 +72,7 @@ services:
     ports:
       - "5433:5432"
 
-  # --- APACHE KAFKA (Broker único con KRaft) --- #
+  # --- Apache KAFKA (Unique Broker with KRaft) --- #
   kafka:
     image: apache/kafka:latest
     container_name: kafka-broker
@@ -85,11 +85,11 @@ services:
       KAFKA_NODE_ID: 1
       KAFKA_PROCESS_ROLES: 'broker,controller'
       KAFKA_CONTROLLER_QUORUM_VOTERS: '1@kafka:9093'
-      # 1. Escuchar en el puerto 9092 para Docker y 29092 para tu máquina externa
+      # 1. Listen on port 9092 for Docker and 29092 for your external machine
       KAFKA_LISTENERS: 'INTERNAL://0.0.0.0:9092,EXTERNAL://0.0.0.0:29092,CONTROLLER://0.0.0.0:9093'
-      # 2. Indicar las direcciones correctas según quién se conecte
+      # 2. Indicate the correct addresses depending on who is connecting
       KAFKA_ADVERTISED_LISTENERS: 'INTERNAL://kafka:9092,EXTERNAL://localhost:29092'
-      # 3. Mapear los nombres de los protocolos
+      # 3. Map the protocol names
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: 'INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT,CONTROLLER:PLAINTEXT'
       KAFKA_INTER_BROKER_LISTENER_NAME: 'INTERNAL'
       KAFKA_CONTROLLER_LISTENER_NAMES: 'CONTROLLER'
@@ -98,7 +98,7 @@ services:
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
       KAFKA_LOG_DIRS: '/tmp/kraft-combined-logs'
 
-  # --- KAFKA UI (Interfaz Gráfica para Monitorear Kafka) --- #
+  # --- KAFKA UI (Web UI to Monitor Kafka) --- #
   kafka-ui:
     image: provectuslabs/kafka-ui:latest
     container_name: kafka-dashboard
@@ -113,21 +113,35 @@ services:
       KAFKA_CLUSTERS_0_NAME: 'order-cluster'
       KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: 'kafka:9092'
 
-  # --- MAILPIT (Servidor SMTP de pruebas con Web UI) --- #
-  mailpit:
+  # --- MAIL-PIT (SMTP Server for testing with Web UI) --- #
+  email-pit:
     image: axllent/mailpit:latest
     container_name: email-server
     networks:
       - notifications-network
     ports:
-      - "1025:1025" # Puerto SMTP para ms-notifications
-      - "8025:8025" # Interfaz Web para ver tus correos
+      - "8025:8025" # Web UI
+      - "1025:1025" # SMTP port
+
+  # --- SMS-PIT (SMS Server for testing with Web UI) --- #
+  sms-pit:
+    image: valentinesamuel/smspit:latest
+    container_name: sms-pit
+    networks:
+      - notifications-network
+    ports:
+      - "4301:4301"   # Web UI
+      - "4300:4300"   # API/Webhook
+    volumes:
+      - sms-pit-volume:/data   # Persist SQLite DB
 
 volumes:
 #  users-volume:
 #    name: users-volume
   notifications-volume:
     name: notifications-volume
+  sms-pit-volume:
+    name: sms-pit-volume
 
 networks:
   notifications-network:

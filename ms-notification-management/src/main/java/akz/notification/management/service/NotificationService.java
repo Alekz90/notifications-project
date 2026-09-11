@@ -51,7 +51,7 @@ public class NotificationService implements INotificationService {
   @Override
   public NotificationDto.PaginationResponse getAllByUserId(Long userId, int size, int page, ECanal canal) {
     return NotificationDto.PaginationResponse.build(
-      strategies.get(canal.name()).getAllByUserId(userId, size, page));
+      strategies.get(canal.getServiceName()).getAllByUserId(userId, size, page));
   }
 
   /**
@@ -65,7 +65,7 @@ public class NotificationService implements INotificationService {
   public NotificationDto.ResponseDetail create(Long userId, NotificationDto.Register notificationDto) {
     validateConstraintsCreation(notificationDto);
     return NotificationDto.ResponseDetail.fromEntity(
-              strategies.get(notificationDto.canal().name()).save(
+              strategies.get(notificationDto.canal().getServiceName()).save(
                 NotificationDto.Register.toNotificationModel(userId, notificationDto)));
   }
 
@@ -142,7 +142,7 @@ public class NotificationService implements INotificationService {
    * @throws CustomException if the notification is not found
    */
   private NotificationModel findById(Long id, ECanal canal) {
-    return strategies.get(canal.name()).findById(id)
+    return strategies.get(canal.getServiceName()).findById(id)
       .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, EError.NOTIFICATION_NOT_FOUND));
   }
 
@@ -167,7 +167,7 @@ public class NotificationService implements INotificationService {
    * @return the updated notification model
    */
   private NotificationModel update(NotificationModel notification, ECanal canal) {
-    return strategies.get(canal.name()).update(notification);
+    return strategies.get(canal.getServiceName()).update(notification);
   }
 
   /**

@@ -33,3 +33,17 @@ spring:
       auth: false
       starttls:
         enable: false
+
+sms-api:
+  url: ${SMS_API_URL}
+  key: ${SMS_API_KEY}
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      sms-instance:
+        registerHealthIndicator: true
+        slidingWindowSize: 10
+        failureRateThreshold: 50
+        waitDurationInOpenState: 10000ms
+        permittedNumberOfCallsInHalfOpenState: 3

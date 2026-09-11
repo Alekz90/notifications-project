@@ -13,6 +13,7 @@ public final class Constants {
   public static final String KAFKA_TOPIC_STATUS_NAME = "notification-status-topic";
   public static final String UTF_8 = "utf-8";
   public static final String SUB_TYPE_HTML = "html";
+  public static final String NOTIFICATIONS_API = "Notifications Api";
 
   private Constants() {
     //TODO: throw new CustomCommonException(ECommonError.UTILITY_CLASS);

@@ -35,10 +35,17 @@ $$;
 DO $$
     DECLARE
         vUserId	INT := 1;
+		vEmailSeq	VARCHAR(50) := 'email_notifications_id_seq';
+	    vSMSSeq		VARCHAR(50) := 'sms_notifications_id_seq';
+	    vPushSeq	VARCHAR(50) := 'push_notifications_id_seq';
     BEGIN
 
-        TRUNCATE email_notifications;
+		-- Destroy the table structure and rebuild it
+        TRUNCATE TABLE email_notifications RESTART IDENTITY;
+        TRUNCATE TABLE sms_notifications RESTART IDENTITY;
+        TRUNCATE TABLE push_notifications RESTART IDENTITY;
 
+		-- Insert the Emails 
         CALL insert_notification(
                 'EMAIL', vUserId, 'john.doe@example.com', 'PENDING',
                 'Welcome to our platform',
@@ -115,8 +122,7 @@ DO $$
                 'There is an important update regarding your account. Please review it at your convenience.'
              );
 
-        TRUNCATE sms_notifications;
-
+		-- Insert the SMS messages
         CALL insert_notification(
                 'SMS', vUserId, '+528461063940', 'PENDING', 'Welcome',
                 'Welcome! Your account has been successfully created.'
@@ -178,8 +184,7 @@ DO $$
                 'Your request has been completed successfully. Thank you for using our service.'
              );
 
-        TRUNCATE push_notifications;
-
+		--Insert Push Notifications
         CALL insert_notification(
                 'PUSH', vUserId, 'device_a8f3c9217b45', 'PENDING', 'Welcome',
                 'Welcome to the app! Your account has been successfully created.'

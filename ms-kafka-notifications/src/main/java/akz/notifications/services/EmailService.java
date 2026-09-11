@@ -35,7 +35,7 @@ public class EmailService implements INotificationService {
 
       return KafkaNotificationResponseDto.from(notification);
     } catch (Exception e) {
-      log.error("Failed to send email from {} to {}: {}", notification.getFrom(), notification.getTo(), e.getMessage());
+      log.error("Error sending email notification: {}", notification.toString(), e);
       return KafkaNotificationResponseDto.buildFail(notification);
     }
   }

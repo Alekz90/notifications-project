@@ -14,9 +14,9 @@ import org.springframework.stereotype.Component;
 
 import java.util.Optional;
 
-import static akz.notification.management.util.Constants.EMAIL_CANAL_NAME;
+import static akz.notification.management.util.Constants.EMAIL_SERVICE_NAME;
 
-@Component(EMAIL_CANAL_NAME)
+@Component(EMAIL_SERVICE_NAME)
 @RequiredArgsConstructor
 public class EmailNotificationFacade implements INotificationFacade {
 
@@ -57,24 +57,25 @@ public class EmailNotificationFacade implements INotificationFacade {
   /**
    * Save a new email notification or update an existing one.
    *
-   * @param notificationModel the NotificationModel DTO to be saved
+   * @param model the NotificationModel DTO to be saved
    * @return the saved NotificationModel DTO
    */
   @Override
-  public NotificationModel save(NotificationModel notificationModel) {
-    return NotificationModel.fromEntity(repository.save(NotificationModel.toEntityEmail(notificationModel)));
+  public NotificationModel save(NotificationModel model) {
+    return NotificationModel.fromEntity(repository.save(new EmailNotification(model)));
   }
 
   /**
    * Update an existing email notification.
-   * @param notificationModel the NotificationModel DTO to be updated
+   *
+   * @param model the NotificationModel DTO to be updated
    * @return the updated NotificationModel DTO
    */
   @Override
-  public NotificationModel update(NotificationModel notificationModel) {
-    EmailNotification entity = repository.findByIdAndDeletedFalse(notificationModel.getId())
+  public NotificationModel update(NotificationModel model) {
+    EmailNotification entity = repository.findByIdAndDeletedFalse(model.getId())
       .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, EError.NOTIFICATION_NOT_FOUND));
-    entity.update(notificationModel);
+    entity.update(model);
     return NotificationModel.fromEntity(repository.save(entity));
   }
 }

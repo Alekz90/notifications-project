@@ -51,16 +51,6 @@ public class NotificationModel {
   }
 
   /**
-   * Converts a NotificationModel DTO to an EmailNotification entity.
-   *
-   * @param model the NotificationModel DTO to convert
-   * @return an EmailNotification entity representing the notification model
-   */
-  public static EmailNotification toEntityEmail(NotificationModel model) {
-    return new EmailNotification(model.getUserId(), model.getTitle(), model.getBody(), model.getFrom(), model.getTo());
-  }
-
-  /**
    * Converts an SMSNotification entity to a NotificationModel DTO.
    *
    * @param sms the SMSNotification entity to convert
@@ -83,16 +73,6 @@ public class NotificationModel {
   }
 
   /**
-   * Converts a NotificationModel DTO to an SMSNotification entity.
-   *
-   * @param model the NotificationModel DTO to convert
-   * @return an SMSNotification entity representing the notification model
-   */
-  public static SMSNotification toEntitySMS(NotificationModel model) {
-    return new SMSNotification(model.getUserId(), model.getTitle(), model.getBody(), model.getFrom(), model.getTo());
-  }
-
-  /**
    * Converts a PushNotification entity to a NotificationModel DTO.
    *
    * @param push the PushNotification entity to convert
@@ -112,16 +92,6 @@ public class NotificationModel {
       .createdAt(push.getCreatedAt())
       .updatedAt(push.getUpdatedAt())
       .build();
-  }
-
-  /**
-   * Converts a NotificationModel DTO to a PushNotification entity.
-   *
-   * @param model the NotificationModel DTO to convert
-   * @return a PushNotification entity representing the notification model
-   */
-  public static PushNotification toEntityPush(NotificationModel model) {
-    return new PushNotification(model.getUserId(), model.getTitle(), model.getBody(), model.getFrom(), model.getTo());
   }
 
   /**

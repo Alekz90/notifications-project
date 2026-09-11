@@ -2,7 +2,6 @@ package akz.notification.management.facades;
 
 import akz.notification.management.dto.NotificationModel;
 import akz.notification.management.dto.PaginationNotificationModel;
-import akz.notification.management.entities.EmailNotification;
 import akz.notification.management.entities.PushNotification;
 import akz.notification.management.exceptions.CustomException;
 import akz.notification.management.repositories.PushNotificationRepository;
@@ -15,9 +14,9 @@ import org.springframework.stereotype.Component;
 
 import java.util.Optional;
 
-import static akz.notification.management.util.Constants.PUSH_CANAL_NAME;
+import static akz.notification.management.util.Constants.PUSH_SERVICE_NAME;
 
-@Component(PUSH_CANAL_NAME)
+@Component(PUSH_SERVICE_NAME)
 @RequiredArgsConstructor
 public class PushNotificationFacade implements INotificationFacade {
 
@@ -58,25 +57,25 @@ public class PushNotificationFacade implements INotificationFacade {
   /**
    * Save a new Push notification or update an existing one.
    *
-   * @param notificationModel the NotificationModel DTO to be saved
+   * @param model the NotificationModel DTO to be saved
    * @return the saved NotificationModel DTO
    */
   @Override
-  public NotificationModel save(NotificationModel notificationModel) {
-    return NotificationModel.fromEntity(repository.save(NotificationModel.toEntityPush(notificationModel)));
+  public NotificationModel save(NotificationModel model) {
+    return NotificationModel.fromEntity(repository.save(new PushNotification(model)));
   }
 
   /**
    * Update an existing Push notification.
    *
-   * @param notificationModel the NotificationModel DTO to be updated
+   * @param model the NotificationModel DTO to be updated
    * @return the updated NotificationModel DTO
    */
   @Override
-  public NotificationModel update(NotificationModel notificationModel) {
-    PushNotification entity = repository.findByIdAndDeletedFalse(notificationModel.getId())
+  public NotificationModel update(NotificationModel model) {
+    PushNotification entity = repository.findByIdAndDeletedFalse(model.getId())
       .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, EError.NOTIFICATION_NOT_FOUND));
-    entity.update(notificationModel);
+    entity.update(model);
     return NotificationModel.fromEntity(repository.save(entity));
   }
 }

@@ -52,28 +52,13 @@ public abstract class AbstractNotification {
   }
 
   /**
-   * Constructs a new AbstractNotification entity with the specified user ID and title.
-   *
-   * @param userId the ID of the user associated with the notification
-   * @param title  the title of the notification
-   */
-  protected AbstractNotification(Long userId, String title) {
-    this();
-    this.userId = userId;
-    this.title = title;
-  }
-
-  /**
    * Constructs a new AbstractNotification entity with the specified NotificationModel.
-   * @param model the NotificationModel containing the updated values
+   * @param model the NotificationModel containing the user ID and title
    */
   protected AbstractNotification(NotificationModel model) {
+    this();
+    this.userId = model.getUserId();
     this.title = model.getTitle();
-    this.status = model.getStatus();
-    this.deleted = model.isDeleted();
-    this.sentAt = model.getSentAt();
-    this.createdAt = model.getCreatedAt();
-    this.updatedAt = CommonUtils.getCurrentLocalDateTime();
   }
 
   /**
