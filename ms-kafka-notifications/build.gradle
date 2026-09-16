@@ -1,0 +1,25 @@
+plugins {
+	id 'java'
+	id 'org.springframework.boot'
+	id 'io.spring.dependency-management'
+}
+
+version = '1.0.0'
+description = 'Microservice for notifications with Kafka integration'
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-kafka'
+	testImplementation 'org.springframework.boot:spring-boot-starter-kafka-test'
+	implementation 'org.springframework.boot:spring-boot-starter-mail'
+	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+	developmentOnly 'org.springframework.boot:spring-boot-devtools'
+	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}

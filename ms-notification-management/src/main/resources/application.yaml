@@ -1,0 +1,55 @@
+server.port: 8082
+
+spring:
+  application:
+    name: ms-notification-management
+  datasource:
+    url: ${NOTIFICATIONS_DB_URL}
+    username: ${NOTIFICATIONS_DB_USER}
+    password: ${NOTIFICATIONS_DB_PASSWORD}
+    initialize: true
+  jpa.hibernate:
+      ddl-auto: update
+      show-sql: true
+      dialect: org.hibernate.dialect.PostgreSQLDialect
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS}
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JacksonJsonSerializer
+    consumer:
+      auto-offset-reset: earliest
+      enable-auto-commit: true
+      key-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+      properties.spring:
+        json:
+          trusted.packages: '*'
+          type.mapping: akz.notifications.dto.kafka.KafkaNotificationResponseDto:akz.notification.management.dto.kafka.KafkaNotificationResponseDto
+        deserializer:
+          key.delegate.class: org.apache.kafka.common.serialization.StringDeserializer
+          value.delegate.class: org.springframework.kafka.support.serializer.JsonDeserializer
+
+springdoc:
+  api-docs.enabled: true
+  default-consumes-media-type: 'application/json'
+  default-produces-media-type: 'application/json'
+
+  open-api:
+    servers:
+      - url: 'http://localhost:${server.port}'
+        description: 'Development server'
+      - url: 'https://api.alkz.com/ms-notification-management'
+        description: 'Production server'
+    info:
+      title: 'Notification Management API'
+      description: 'API for managing notifications in the system.'
+      version: '1.0.0'
+      terms-of-service: 'https://alkz.com/terms'
+      contact:
+        name: 'Alkz Support'
+        url: 'https://alkz.com/support'
+        email: 'alejd@alkz.com'
+      license:
+        name: 'MIT License'
+        url: 'https://opensource.org/licenses/MIT'

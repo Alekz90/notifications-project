@@ -1,0 +1,49 @@
+server:
+  port: 8083
+spring:
+  application:
+    name: ms-kafka-notifications
+
+  # Kafka configuration
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS}
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JacksonJsonSerializer
+    consumer:
+      auto-offset-reset: earliest
+      enable-auto-commit: true
+      key-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+      properties.spring:
+        json:
+          trusted.packages: '*'
+          type.mapping: akz.notification.management.dto.kafka.KafkaNotificationSendingDto:akz.notifications.dto.kafka.KafkaNotificationSendingDto
+        deserializer:
+          key.delegate.class: org.apache.kafka.common.serialization.StringDeserializer
+          value.delegate.class: org.springframework.kafka.support.serializer.JsonDeserializer
+
+  # Mail configuration
+  mail:
+    host: ${MAIL_HOST}
+    port: ${MAIL_PORT}
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
+    properties.mail.smtp:
+      auth: false
+      starttls:
+        enable: false
+
+sms-api:
+  url: ${SMS_API_URL}
+  key: ${SMS_API_KEY}
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      sms-instance:
+        registerHealthIndicator: true
+        slidingWindowSize: 10
+        failureRateThreshold: 50
+        waitDurationInOpenState: 10000ms
+        permittedNumberOfCallsInHalfOpenState: 3

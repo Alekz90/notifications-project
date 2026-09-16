@@ -1,0 +1,159 @@
+name: notifications-project
+services:
+  # --- Security user microservice --- #
+#  ms-security-users-service:
+#    build:
+#      args:
+#        - GITHUB_USERNAME=${GITHUB_USERNAME}
+#        - GITHUB_TOKEN=${GITHUB_TOKEN}
+#      context: .
+#      dockerfile: ms-security-users.dockerfile
+#    image: ms-security-users:1.0.0
+#    container_name: ms-security-users
+#    ports:
+#      - "8081:8081"
+#    env_file:
+#      - .env
+#    environment:
+#      - USERS_DB_URL=jdbc:postgresql://users-db-service:5432/users
+#      - USERS_DB_USER=${USERS_DB_USER}
+#      - USERS_DB_PASSWORD=${USERS_DB_PASSWORD}
+#    depends_on:
+#      - users-db-service
+
+  # --- Notification management microservice --- #
+#  ms-notification-management-service:
+#    build:
+#      args:
+#        - GITHUB_USERNAME=${GITHUB_USERNAME}
+#        - GITHUB_TOKEN=${GITHUB_TOKEN}
+#      context: .
+#      dockerfile: ms-notification-management.dockerfile
+#    image: ms-notification-management:1.0.0
+#    container_name: ms-notification-management
+#    ports:
+#      - "8082:8082"
+#    env_file:
+#      - .env
+#    environment:
+#      - NOTIFICATIONS_DB_URL=jdbc:postgresql://notifications-db-service:5432/notifications
+#      - NOTIFICATIONS_DB_USER=${NOTIFICATIONS_DB_USER}
+#      - NOTIFICATIONS_DB_PASSWORD=${NOTIFICATIONS_DB_PASSWORD}
+#    depends_on:
+#      - notifications-db-service
+
+  # --- Users database service --- #
+#  users-db-service:
+#    container_name: users-db
+#    image: postgres:15.3
+#    env_file:
+#      - .env
+#    environment:
+#      POSTGRES_DB: ${USERS_DB_NAME}
+#      POSTGRES_USER: ${USERS_DB_USER}
+#      POSTGRES_PASSWORD: ${USERS_DB_PASSWORD}
+#    volumes:
+#      - users-volume:/var/lib/postgresql/data
+#    ports:
+#    - "5432:5432"
+
+  # --- Notifications database service --- #
+  notifications-db-service:
+    container_name: notifications-db
+    image: postgres:15.3
+    env_file:
+      - .env
+    environment:
+      POSTGRES_DB: ${NOTIFICATIONS_DB_NAME}
+      POSTGRES_USER: ${NOTIFICATIONS_DB_USER}
+      POSTGRES_PASSWORD: ${NOTIFICATIONS_DB_PASSWORD}
+    volumes:
+      - notifications-volume:/var/lib/postgresql/data
+    ports:
+      - "5433:5432"
+
+  # --- Apache KAFKA (Unique Broker with KRaft) --- #
+  kafka:
+    image: apache/kafka:latest
+    container_name: kafka-broker
+    networks:
+      - notifications-network
+    ports:
+      - "9092:9092"
+      - "29092:29092"
+    environment:
+      KAFKA_NODE_ID: 1
+      KAFKA_PROCESS_ROLES: 'broker,controller'
+      KAFKA_CONTROLLER_QUORUM_VOTERS: '1@kafka:9093'
+      # 1. Listen on port 9092 for Docker and 29092 for your external machine
+      KAFKA_LISTENERS: 'INTERNAL://0.0.0.0:9092,EXTERNAL://0.0.0.0:29092,CONTROLLER://0.0.0.0:9093'
+      # 2. Indicate the correct addresses depending on who is connecting
+      KAFKA_ADVERTISED_LISTENERS: 'INTERNAL://kafka:9092,EXTERNAL://localhost:29092'
+      # 3. Map the protocol names
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: 'INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT,CONTROLLER:PLAINTEXT'
+      KAFKA_INTER_BROKER_LISTENER_NAME: 'INTERNAL'
+      KAFKA_CONTROLLER_LISTENER_NAMES: 'CONTROLLER'
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_LOG_DIRS: '/tmp/kraft-combined-logs'
+
+  # --- KAFKA UI (Web UI to Monitor Kafka) --- #
+  kafka-ui:
+    image: provectuslabs/kafka-ui:latest
+    container_name: kafka-dashboard
+    networks:
+      - notifications-network
+    ports:
+      - "8080:8080"
+    depends_on:
+      - kafka
+    environment:
+      DYNAMIC_CONFIG_ENABLED: 'true'
+      KAFKA_CLUSTERS_0_NAME: 'order-cluster'
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: 'kafka:9092'
+
+  # --- MAIL-PIT (SMTP Server for testing with Web UI) --- #
+  email-pit:
+    image: axllent/mailpit:latest
+    container_name: email-server
+    networks:
+      - notifications-network
+    ports:
+      - "8025:8025" # Web UI
+      - "1025:1025" # SMTP port
+
+  # --- SMS-PIT (SMS Server for testing with Web UI) --- #
+  sms-pit:
+    image: valentinesamuel/smspit:latest
+    container_name: sms-pit
+    networks:
+      - notifications-network
+    ports:
+      - "4301:4301"   # Web UI
+      - "4300:4300"   # API/Webhook
+    volumes:
+      - sms-pit-volume:/data   # Persist SQLite DB
+
+volumes:
+#  users-volume:
+#    name: users-volume
+  notifications-volume:
+    name: notifications-volume
+  sms-pit-volume:
+    name: sms-pit-volume
+
+networks:
+  notifications-network:
+    name: notifications-network
+
+# Move to the directory
+# cd C:/Projects/Notifications/notifications-project
+
+# "--build" forced the image building
+# "--env-file .env" environment file
+# Build and run the containers
+# docker compose up -d
+
+# To stop and remove the containers
+# docker compose down
