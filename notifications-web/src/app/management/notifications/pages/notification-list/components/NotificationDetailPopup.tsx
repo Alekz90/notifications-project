@@ -26,7 +26,7 @@ const getDateFormatted = (dateString: string | undefined) => {
 }
 
 export function NotificationDetailPopup({ canal, children }: Props) {
-  //const { notification } = UseCustomGetNotificationById(canal);
+  const { notification } = UseCustomGetNotificationById(canal);
 
   return (
     <AlertDialog>

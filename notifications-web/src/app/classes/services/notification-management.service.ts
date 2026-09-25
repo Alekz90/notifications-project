@@ -3,7 +3,10 @@ import axios from "axios";
 import { CanalEnum } from "@enums/canal-enum";
 import type { NotificationDto, NotificationListResponse } from "@interfaces/notification.interface";
 import { Constants } from "@utils/constants";
-import { MOCK_DELETE_NOTIFICATION_RESPONSE, MOCK_EMAIL_NOTIFICATIONS_RESPONSE, MOCK_NEW_NOTIFICATION_RESPONSE, MOCK_PUSH_NOTIFICATIONS_RESPONSE, MOCK_SEND_NOTIFICATION_RESPONSE, MOCK_SMS_NOTIFICATIONS_RESPONSE } from "../mocks/mock-response";
+import { 
+  MOCK_DELETE_NOTIFICATION_RESPONSE, MOCK_EMAIL_NOTIFICATIONS_RESPONSE, MOCK_NEW_NOTIFICATION_RESPONSE,
+  MOCK_PUSH_NOTIFICATIONS_RESPONSE, MOCK_SEND_NOTIFICATION_RESPONSE, MOCK_SMS_NOTIFICATIONS_RESPONSE
+} from "@mocks/mock-response";
 
 const NotificationsApi = axios.create({
   baseURL: import.meta.env.VITE_NOTIFICATIONS_API_URL,
@@ -17,8 +20,9 @@ NotificationsApi.interceptors.request.use((config) => {
   return config;
 });
 
-const NOTIFICATIONS_V1_URL = "/v1";
+const NOTIFICATIONS_V1_URL = "/notifications/v1";
 
+/*
 export const getNotification = async (id: number, canal: CanalEnum)
   : Promise<Response<NotificationDto>> => {
   
@@ -77,14 +81,14 @@ export const deleteNotification = async (id: number, updatedAt: string, canal: C
   return NotificationsApi.delete(`${NOTIFICATIONS_V1_URL}/${id}`, { params, headers })
     .then(response => response.data)
     .catch(error => catchError(error, "Error deleting notification: "));
-};
+};*/
 
 const catchError = (error: any, message: string): void => {
   console.error(message, error?.response?.data?.message || error.message);
   throw error;
 };
 
-/*
+// Delete this comment if not needed
 export const getNotification = async (id: number, canal: CanalEnum)
   : Promise<Response<NotificationDto>> => {
   
@@ -99,12 +103,6 @@ export const getNotification = async (id: number, canal: CanalEnum)
 export const getNotifications = async (
   userId: number, canal: CanalEnum, page = Constants.PAGE_DEFAULT, size = Constants.SIZE_DEFAULT
 ) : Promise<Response<NotificationListResponse>> => {
-  
-  const params = { canal, page, size };
-  
-  return NotificationsApi.get(`${NOTIFICATIONS_V1_URL}/users/${userId}`, { params })
-    .then(response => response.data)
-    .catch(error => catchError(error, "Error fetching notifications: "));
  
   let notificationsResponse: Response<NotificationListResponse>;
   switch (canal) {
@@ -155,4 +153,3 @@ export const deleteNotification = async (id: number, updatedAt: string, canal: C
   : Promise<Response<null>> => {
   return Promise.resolve(MOCK_DELETE_NOTIFICATION_RESPONSE);
 };
-*/

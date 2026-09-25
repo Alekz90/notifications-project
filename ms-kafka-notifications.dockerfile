@@ -20,7 +20,7 @@ COPY ms-notification-management ./ms-notification-management/
 COPY ms-kafka-notifications ./ms-kafka-notifications/
 
 # Download the dependencies and build the project
-RUN gradle :ms-security-users:build -x test --no-daemon || true
+RUN gradle :ms-kafka-notifications:build -x test --no-daemon || true
 
 # Create the final image
 FROM eclipse-temurin:21-jdk-alpine-3.20
@@ -29,7 +29,7 @@ FROM eclipse-temurin:21-jdk-alpine-3.20
 WORKDIR /app
 
 # Copy the generated jar in the building
-COPY --from=build /app/ms-security-users/build/libs/*.jar app.jar
+COPY --from=build /app/ms-kafka-notifications/build/libs/*.jar app.jar
 
 ENTRYPOINT ["java","-jar","app.jar"]
 
@@ -40,13 +40,13 @@ ENTRYPOINT ["java","-jar","app.jar"]
 # docker build \
 #  --build-arg GITHUB_USERNAME="your_github_username" \
 #  --build-arg GITHUB_TOKEN="your_github_token" \
-#  -t "ms-security-users-img:1.0.0" -f ms-security-users.dockerfile .
+#  -t "ms-kafka-notifications-img:1.0.0" -f ms-kafka-notifications.dockerfile .
 
 # Ejecutar el contenedor
-# docker run --name "ms-security-users-container" "ms-security-users-img:1.0.0"
+# docker run --name "ms-kafka-notifications-container" "ms-kafka-notifications-img:1.0.0"
 
 # Delete the container
-# docker container rm -f "ms-security-users-container"
+# docker container rm -f "ms-kafka-notifications-container"
 
 # Delete the image
-# docker image rm "ms-security-users-img:1.0.0"
+# docker image rm "ms-kafka-notifications-img:1.0.0"

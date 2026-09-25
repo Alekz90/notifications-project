@@ -25,6 +25,7 @@ export default defineConfig({
   server: {
     proxy: {
       '/notifications': 'http://localhost:8082',
+      '/push-notifications': 'http://localhost:8083',
     }
   }
 })

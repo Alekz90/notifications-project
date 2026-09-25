@@ -1,7 +1,7 @@
 name: notifications-project
 services:
   # --- Security user microservice --- #
-#  ms-security-users-service:
+#  ms-security-users:
 #    build:
 #      args:
 #        - GITHUB_USERNAME=${GITHUB_USERNAME}
@@ -15,14 +15,14 @@ services:
 #    env_file:
 #      - .env
 #    environment:
-#      - USERS_DB_URL=jdbc:postgresql://users-db-service:5432/users
+#      - USERS_DB_URL=jdbc:postgresql://users-db:5432/users
 #      - USERS_DB_USER=${USERS_DB_USER}
 #      - USERS_DB_PASSWORD=${USERS_DB_PASSWORD}
 #    depends_on:
-#      - users-db-service
+#      - users-db
 
   # --- Notification management microservice --- #
-#  ms-notification-management-service:
+#  ms-notification-management:
 #    build:
 #      args:
 #        - GITHUB_USERNAME=${GITHUB_USERNAME}
@@ -36,14 +36,40 @@ services:
 #    env_file:
 #      - .env
 #    environment:
-#      - NOTIFICATIONS_DB_URL=jdbc:postgresql://notifications-db-service:5432/notifications
+#      - NOTIFICATIONS_DB_URL=jdbc:postgresql://notifications-db:5432/notifications
 #      - NOTIFICATIONS_DB_USER=${NOTIFICATIONS_DB_USER}
 #      - NOTIFICATIONS_DB_PASSWORD=${NOTIFICATIONS_DB_PASSWORD}
 #    depends_on:
-#      - notifications-db-service
+#      - notifications-db
+#      - kafka
+
+  # --- Notification management microservice --- #
+#  ms-kafka-notifications:
+#    build:
+#      args:
+#        - GITHUB_USERNAME=${GITHUB_USERNAME}
+#        - GITHUB_TOKEN=${GITHUB_TOKEN}
+#      context: .
+#      dockerfile: ms-kafka-notifications.dockerfile
+#    image: ms-kafka-notifications:1.0.0
+#    container_name: ms-kafka-notifications
+#    ports:
+#      - "8083:8083"
+#    env_file:
+#      - .env
+#    environment:
+#      - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+#      - MAIL_HOST=email-pit
+#      - MAIL_PORT=1025
+#      - MAIL_USERNAME=${MAIL_USERNAME}
+#      - MAIL_PASSWORD=${MAIL_PASSWORD}
+#      - SMS_API_URL=sms-pit:4300/api
+#      - SMS_API_KEY=${SMS_API_KEY}
+#    depends_on:
+#      - kafka
 
   # --- Users database service --- #
-#  users-db-service:
+#  users-db:
 #    container_name: users-db
 #    image: postgres:15.3
 #    env_file:
@@ -58,90 +84,99 @@ services:
 #    - "5432:5432"
 
   # --- Notifications database service --- #
-  notifications-db-service:
-    container_name: notifications-db
-    image: postgres:15.3
-    env_file:
-      - .env
-    environment:
-      POSTGRES_DB: ${NOTIFICATIONS_DB_NAME}
-      POSTGRES_USER: ${NOTIFICATIONS_DB_USER}
-      POSTGRES_PASSWORD: ${NOTIFICATIONS_DB_PASSWORD}
-    volumes:
-      - notifications-volume:/var/lib/postgresql/data
-    ports:
-      - "5433:5432"
+#  notifications-db:
+#    container_name: notifications-db
+#    image: postgres:15.3
+#    env_file:
+#      - .env
+#    environment:
+#      POSTGRES_DB: ${NOTIFICATIONS_DB_NAME}
+#      POSTGRES_USER: ${NOTIFICATIONS_DB_USER}
+#      POSTGRES_PASSWORD: ${NOTIFICATIONS_DB_PASSWORD}
+#    volumes:
+#      - notifications-volume:/var/lib/postgresql/data
+#    ports:
+#      - "5433:5432"
 
   # --- Apache KAFKA (Unique Broker with KRaft) --- #
-  kafka:
-    image: apache/kafka:latest
-    container_name: kafka-broker
-    networks:
-      - notifications-network
-    ports:
-      - "9092:9092"
-      - "29092:29092"
-    environment:
-      KAFKA_NODE_ID: 1
-      KAFKA_PROCESS_ROLES: 'broker,controller'
-      KAFKA_CONTROLLER_QUORUM_VOTERS: '1@kafka:9093'
-      # 1. Listen on port 9092 for Docker and 29092 for your external machine
-      KAFKA_LISTENERS: 'INTERNAL://0.0.0.0:9092,EXTERNAL://0.0.0.0:29092,CONTROLLER://0.0.0.0:9093'
-      # 2. Indicate the correct addresses depending on who is connecting
-      KAFKA_ADVERTISED_LISTENERS: 'INTERNAL://kafka:9092,EXTERNAL://localhost:29092'
-      # 3. Map the protocol names
-      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: 'INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT,CONTROLLER:PLAINTEXT'
-      KAFKA_INTER_BROKER_LISTENER_NAME: 'INTERNAL'
-      KAFKA_CONTROLLER_LISTENER_NAMES: 'CONTROLLER'
-      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
-      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
-      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
-      KAFKA_LOG_DIRS: '/tmp/kraft-combined-logs'
+#  kafka:
+#    image: apache/kafka:latest
+#    container_name: kafka-broker
+#    networks:
+#      - notifications-network
+#    ports:
+#      - "9092:9092"
+#      - "29092:29092"
+#    environment:
+#      KAFKA_NODE_ID: 1
+#      KAFKA_PROCESS_ROLES: 'broker,controller'
+#      KAFKA_CONTROLLER_QUORUM_VOTERS: '1@kafka:9093'
+#      # 1. Listen on port 9092 for Docker and 29092 for your external machine
+#      KAFKA_LISTENERS: 'INTERNAL://0.0.0.0:9092,EXTERNAL://0.0.0.0:29092,CONTROLLER://0.0.0.0:9093'
+#      # 2. Indicate the correct addresses depending on who is connecting
+#      KAFKA_ADVERTISED_LISTENERS: 'INTERNAL://kafka:9092,EXTERNAL://localhost:29092'
+#      # 3. Map the protocol names
+#      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: 'INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT,CONTROLLER:PLAINTEXT'
+#      KAFKA_INTER_BROKER_LISTENER_NAME: 'INTERNAL'
+#      KAFKA_CONTROLLER_LISTENER_NAMES: 'CONTROLLER'
+#      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+#      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+#      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+#      KAFKA_LOG_DIRS: '/tmp/kraft-combined-logs'
 
   # --- KAFKA UI (Web UI to Monitor Kafka) --- #
-  kafka-ui:
-    image: provectuslabs/kafka-ui:latest
-    container_name: kafka-dashboard
-    networks:
-      - notifications-network
-    ports:
-      - "8080:8080"
-    depends_on:
-      - kafka
-    environment:
-      DYNAMIC_CONFIG_ENABLED: 'true'
-      KAFKA_CLUSTERS_0_NAME: 'order-cluster'
-      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: 'kafka:9092'
+#  kafka-ui:
+#    image: provectuslabs/kafka-ui:latest
+#    container_name: kafka-dashboard
+#    networks:
+#      - notifications-network
+#    ports:
+#      - "8080:8080"
+#    depends_on:
+#      - kafka
+#    environment:
+#      DYNAMIC_CONFIG_ENABLED: 'true'
+#      KAFKA_CLUSTERS_0_NAME: 'order-cluster'
+#      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: 'kafka:9092'
 
   # --- MAIL-PIT (SMTP Server for testing with Web UI) --- #
-  email-pit:
-    image: axllent/mailpit:latest
-    container_name: email-server
-    networks:
-      - notifications-network
-    ports:
-      - "8025:8025" # Web UI
-      - "1025:1025" # SMTP port
+#  email-pit:
+#    image: axllent/mailpit:latest
+#    container_name: email-server
+#    networks:
+#      - notifications-network
+#    ports:
+#      - "8025:8025" # Web UI
+#      - "1025:1025" # SMTP port
 
   # --- SMS-PIT (SMS Server for testing with Web UI) --- #
-  sms-pit:
-    image: valentinesamuel/smspit:latest
-    container_name: sms-pit
-    networks:
-      - notifications-network
-    ports:
-      - "4301:4301"   # Web UI
-      - "4300:4300"   # API/Webhook
-    volumes:
-      - sms-pit-volume:/data   # Persist SQLite DB
+#  sms-pit:
+#    image: valentinesamuel/smspit:latest
+#    container_name: sms-pit
+#    networks:
+#      - notifications-network
+#    ports:
+#      - "4301:4301"   # Web UI
+#      - "4300:4300"   # API/Webhook
+#    volumes:
+#      - sms-pit-volume:/data   # Persist SQLite DB
 
-volumes:
+  # --- Redis database service --- #
+  redis:
+    container_name: redis
+    image: redis:8.0
+    ports:
+      - "6379:6379"
+
+#volumes:
 #  users-volume:
 #    name: users-volume
-  notifications-volume:
-    name: notifications-volume
-  sms-pit-volume:
-    name: sms-pit-volume
+#  notifications-volume:
+#    name: notifications-volume
+#  sms-pit-volume:
+#    name: sms-pit-volume
+#  redis-volume:
+#    name: redis-volume
 
 networks:
   notifications-network:

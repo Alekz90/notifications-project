@@ -4,7 +4,7 @@ import { RouteConstants } from "@utils/route-constants";
 import { LoginPage } from "@auth/pages/login/LoginPage";
 import { SignUpPage } from "@auth/pages/sign-up/SignUpPage";
 import { NotFoundPage } from "@auth/pages/not-found/NotFoundPage";
-import { NotificationListPage } from "@notifications/pages/notification-list/NotificationListPage";
+import { NotificationPage } from "@/app/management/notifications/pages/notification-list/NotificationPage";
 
 const AuthLayout = React.lazy(() => import("@auth/AuthLayout"));
 const ManagementLayout = React.lazy(() => import("./app/management/ManagementLayout"));
@@ -39,7 +39,7 @@ export const AppRouter = createBrowserRouter (
         },
         {
           path: RouteConstants.notifications.path,
-          element: <NotificationListPage />
+          element: <NotificationPage />
         },
       ]
     },

@@ -12,13 +12,13 @@ import { CustomToolTip } from "@components/CustomToolTip"
 import { UseNotificationContext } from "@context/NotificationContext"
 import type { NotificationDto } from "@interfaces/notification.interface"
 import { UseCustomSendAndDropNotification } from "@management/hooks/CustomNotificationHook"
+import { NotificationDetailPopup } from "@notifications/pages/notification-list/components/NotificationDetailPopup"
 import { NotificationFormPopup } from "@notifications/pages/notification-list/components/NotificationFormPopup"
 import { Constants } from "@utils/constants"
 import type { CanalEnum } from "@utils/enums/canal-enum"
 import { NOTIFICATIONS_STATUS_LABELS, StatusEnum } from "@utils/enums/status-enum"
 import { EyeIcon, PencilLineIcon, PlusSquareIcon, SendIcon, Trash2Icon } from "lucide-react"
 import { useContext } from "react"
-import { NotificationDetailPopup } from "./NotificationDetailPopup"
 
 interface Props {
   tabValue: CanalEnum;
@@ -32,7 +32,7 @@ interface Props {
 export const NotificationTab = ({ tabValue, title, description, tableCaption, notifications, pagination }: Props) => {
   const { setNotification: setNotificationContext } = useContext(UseNotificationContext);
   const { sendFn, dropFn } = UseCustomSendAndDropNotification(tabValue);
-
+  
   return (
     <TabsContent value={ tabValue }>
       <Card className="shadow-lg rounded-lg">
@@ -41,7 +41,6 @@ export const NotificationTab = ({ tabValue, title, description, tableCaption, no
           <CardDescription> { description } </CardDescription>
           <CardAction>
             {/* Add Button */}
-            {/*
             <CustomToolTip content="Add new">
               <span>
                 <NotificationFormPopup canal={ tabValue }>
@@ -51,7 +50,6 @@ export const NotificationTab = ({ tabValue, title, description, tableCaption, no
                 </NotificationFormPopup>
               </span>
             </CustomToolTip>
-            */}
           </CardAction>
         </CardHeader>
         <CardContent className="text-sm text-muted-foreground">

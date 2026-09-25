@@ -7,7 +7,7 @@ import { UseCustomGetNotifications } from "@management/hooks/CustomNotificationH
 import { useState } from "react";
 import { useSearchParams } from "react-router";
 
-export const NotificationListPage = () => {
+export const NotificationPage = () => {
 
   const [ searchParams, setSearchParams ] = useSearchParams();
   const page = searchParams.get(Constants.PAGE_PARAM_NAME) || Constants.PAGE_DEFAULT;

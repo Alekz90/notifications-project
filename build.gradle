@@ -21,14 +21,13 @@ subprojects {
     repositories {
         mavenCentral()
         mavenLocal()
-		maven {
-			url = uri('../repo') // o tu repositorio remoto
+//		maven {
 //			url = uri("https://maven.pkg.github.com/Alekz90/common-utils")
 //			credentials {
 //				username = project.findProperty("github.user") ?: System.getenv("GITHUB_USERNAME")
 //				password = project.findProperty("github.token") ?: System.getenv("GITHUB_TOKEN")
 //			}
-		}
+//		}
     }
 
 	ext {

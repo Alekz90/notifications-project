@@ -17,7 +17,7 @@ COPY build.gradle settings.gradle ./
 # Copy child projects
 COPY ms-security-users ./ms-security-users/
 COPY ms-notification-management ./ms-notification-management/
-COPY ms-notifications ./ms-notifications/
+COPY ms-kafka-notifications ./ms-kafka-notifications/
 
 # Download the dependencies and build the project
 RUN gradle :ms-notification-management:build -x test --no-daemon || true
